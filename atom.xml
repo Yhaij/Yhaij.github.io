@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-19T15:59:48.926Z</updated>
+  <updated>2018-11-20T14:02:33.519Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,21 +17,38 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2018/11/20/hello-world/"/>
-    <id>http://yoursite.com/2018/11/20/hello-world/</id>
-    <published>2018-11-20T05:00:37.245Z</published>
-    <updated>2018-11-19T15:59:48.926Z</updated>
+    <title>Hadoop的RPC分析</title>
+    <link href="http://yoursite.com/2018/11/20/Hadoop%E7%9A%84RPC%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2018/11/20/Hadoop的RPC分析/</id>
+    <published>2018-11-20T12:57:52.000Z</published>
+    <updated>2018-11-20T14:02:33.519Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a
-        
-      
+      &lt;h3 id=&quot;RPC&quot;&gt;&lt;a href=&quot;#RPC&quot; class=&quot;headerlink&quot; title=&quot;RPC&quot;&gt;&lt;/a&gt;RPC&lt;/h3&gt;&lt;p&gt;RPC就是远程过程调用,具体什么是RPC，看一个例子就会明白。&lt;br&gt;比如客户端有一个RPC协议类Protocol。&lt;/p&gt;
+&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;interfce Protocol&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a, &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;但是客户端没有其实现的具体类，该类在服务端&lt;br&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Class ProtocolImpl implenets Protocol&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a, &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b)&lt;/span&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a + b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;则客户端需要调用ProtocolImpl的add方法，需要将调用的方法及其参数等信息发送给服务端，服务端解析信息，调用ProtocolImpl的add方法，将结果在传输给客户端，而RPC的目的就是使客户端仿佛在调用自身的方法来得到该方法的结果。&lt;br&gt;在这其中，Protocol就是一个RPC的协议，这个协议其实就是一个接口类，接口中的方法就是对外提供的远程调用方法。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+    
+    
+      <category term="RPC" scheme="http://yoursite.com/tags/RPC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2018/11/20/hello-world/"/>
+    <id>http://yoursite.com/2018/11/20/hello-world/</id>
+    <published>2018-11-20T07:27:37.167Z</published>
+    <updated>2018-11-20T14:02:31.879Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
     
     </summary>
     
@@ -43,20 +60,21 @@
     <link href="http://yoursite.com/2018/11/20/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/"/>
     <id>http://yoursite.com/2018/11/20/字符串编辑距离/</id>
     <published>2018-11-19T16:15:16.000Z</published>
-    <updated>2018-11-20T06:46:48.811Z</updated>
+    <updated>2018-11-20T14:02:36.909Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;h2 id=&quot;字符串编辑距离&quot;&gt;&lt;a href=&quot;#字符串编辑距离&quot; class=&quot;headerlink&quot; title=&quot;字符串编辑距离&quot;&gt;&lt;/a&gt;字符串编辑距离&lt;/h2&gt;&lt;p&gt;编辑距离（Edit
-        
-      
+      &lt;p&gt;编辑距离（Edit Distance），这里指的是Levenshtein距离，也就是字符串S1通过插入、修改、删除三种操作最少能变换成字符串S2的次数。接下来介绍利用动态规划来求解字符串的编辑距离。&lt;/p&gt;
+&lt;p&gt;定义：$s_1$和$s_2$表示两字符串，$dist(i, j)$表示字符串$s_1$的前$i$个字符串和$s_2$的前$j$个字符串的编辑距离，$s_1(i)$和$s_2(j)$分别表示$s1$的第$i$个字符和$s2$的第$j$字符。&lt;/p&gt;
     
     </summary>
     
+      <category term="算法" scheme="http://yoursite.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="字符串" scheme="http://yoursite.com/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    
+      <category term="动态规划" scheme="http://yoursite.com/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
     
   </entry>
   
