@@ -596,7 +596,7 @@
                 
               
 
-              <time title="创建时间：2018-11-20 00:15:16 / 修改时间：14:37:41" itemprop="dateCreated datePublished" datetime="2018-11-20T00:15:16+08:00">2018-11-20</time>
+              <time title="创建时间：2018-11-20 00:15:16 / 修改时间：14:46:48" itemprop="dateCreated datePublished" datetime="2018-11-20T00:15:16+08:00">2018-11-20</time>
             
 
             
@@ -664,7 +664,7 @@
 <li>若$s_1(i) = s_2(j)$,则$dist(i, j)$就等于$s_1$的前$i-1$个字符串和$s_2$的前$j-1$个字符串的编辑距离即 $dist(i, j) = dist(i-1,j-1) $ </li>
 <li>若$s_1(i) \neq s_2(j)$,则为了使$s_1(i) = s_2(j)$,可以通过在$s_1$的第$i$个字符处插入$s_2$的第$j$个字符，或替换$s_1$的第$i$个字符为$s_2$的第$j$个字符,或删除$s_1(s_2)$的第$i(j)$个字符(即使删除之后还是会出现不同),但是上述都是在进行了一次字符的操作之后,将转化为字问题求解，如上述的替换使$s_1(i) = s_2(j)$，则 $dist(i, j) = dist(i-1,j-1) + 1$ ，插入和删除使 $dist(i, j) = dist(i-1,j) +1$或者 $dist(i, j) = dist(i,j-1) +1$ 。</li>
 </ul>
-<p>基于上述的情况可以得出递推公式：<br>$$<br>dist(i,j) = \begin{equation}<br>\left{<br>             \begin{array}{lr}<br>             i, &amp; j = 0  \<br>             j, &amp; i = 0  \<br>             dist(i-1,j-1), &amp; s_1(i) = s_2(j) \<br>             min(d(i-1,j), d(i,j-1),d(i-1,j-1)), &amp; s_1(i) \neq s_2(j) \<br>             \end{array}<br>\right.<br>\end{equation}<br>$$<br>例如：$s_1 = “abcd”$,$s_2 = “abfce”$,则利用动态规划求解的矩阵为</p>
+<p>基于上述的情况可以得出递推公式：<br>$$<br>dist(i,j) = \begin{equation}<br>\left\{<br>             \begin{array}{lr}<br>             i, &amp; j = 0  \\<br>             j, &amp; i = 0  \\<br>             dist(i-1,j-1), &amp; s_1(i) = s_2(j) \\<br>             min(d(i-1,j), d(i,j-1),d(i-1,j-1)), &amp; s_1(i) \neq s_2(j) \\<br>             \end{array}<br>\right.<br>\end{equation}<br>$$<br>例如：$s_1 = “abcd”$,$s_2 = “abfce”$,则利用动态规划求解的矩阵为</p>
 <table>
 <thead>
 <tr>
