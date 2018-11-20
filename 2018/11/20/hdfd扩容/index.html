@@ -108,14 +108,18 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="标签">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+  <meta name="description" content="hdfs的存储容量不足，需要放入新磁盘扩容扩容有两种方式，一种是linux层面的，一种是hdfs层面的hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值">
+<meta name="keywords" content="HDFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS扩容">
+<meta property="og:url" content="http://yoursite.com/2018/11/20/hdfd扩容/index.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
+<meta property="og:description" content="hdfs的存储容量不足，需要放入新磁盘扩容扩容有两种方式，一种是linux层面的，一种是hdfs层面的hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-19T16:08:49.634Z">
+<meta property="og:updated_time" content="2018-11-20T14:27:15.794Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="标签">
+<meta name="twitter:title" content="HDFS扩容">
+<meta name="twitter:description" content="hdfs的存储容量不足，需要放入新磁盘扩容扩容有两种方式，一种是linux层面的，一种是hdfs层面的hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值">
 
 
 
@@ -124,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/">
+  <link rel="canonical" href="http://yoursite.com/2018/11/20/hdfd扩容/">
 
 
 
@@ -134,7 +138,7 @@
   };
 </script>
 
-  <title>标签 | Sean's Blog</title>
+  <title>HDFS扩容 | Sean's Blog</title>
   
 
 
@@ -254,7 +258,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -359,71 +363,220 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/hdfd扩容/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">标签</h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
+          <h1 class="post-title" itemprop="name headline">HDFS扩容
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-20 22:21:21 / 修改时间：22:27:15" itemprop="dateCreated datePublished" datetime="2018-11-20T22:21:21+08:00">2018-11-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
           
-        
-      </div>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/20/hdfd扩容/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/11/20/hdfd扩容/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/11/20/hdfd扩容/" class="leancloud_visitors" data-flag-title="HDFS扩容">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p>hdfs的存储容量不足，需要放入新磁盘扩容<br>扩容有两种方式，一种是linux层面的，一种是hdfs层面的<br>hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值</p>
+<a id="more"></a>
+<h2 id="linux层面"><a href="#linux层面" class="headerlink" title="linux层面"></a>linux层面</h2><p>linux层面的就是将hdfs的datanode所挂载的分区或逻辑卷扩容</p>
+<p>如果是直接挂在固定分区上，而磁盘还有余量可以进行分区扩容 参考：<a href="http://blog.51cto.com/wutou/1782931" target="_blank" rel="noopener">http://blog.51cto.com/wutou/1782931</a><br>这种直接挂载在分区上的磁盘空间管理方式十分不方便，扩容也很容易出错，而且扩容只有在磁盘还有余量的情况下，<br>无法将两块磁盘的空间结合使用，一块磁盘空间占满，即使加入一块新磁盘也无法对原来磁盘上的分区扩容。<br>所以才会有逻辑卷管理LVM的出现</p>
+<p>如果是lvm对磁盘分区进行管理，那么可以方便的创建物理卷，扩容datanode所挂载的逻辑卷所属的卷组<br>接着扩容该逻辑卷，具体操作方式参考: <a href="https://linux.cn/article-3218-1.html" target="_blank" rel="noopener">https://linux.cn/article-3218-1.html</a></p>
+<h2 id="hdfs层面"><a href="#hdfs层面" class="headerlink" title="hdfs层面"></a>hdfs层面</h2><p>这种不需要对原来的空间扩容，是修改hdfs-site.xml的dfs.datanode.data.dir的值添加新目录，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">	&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">	&lt;value&gt;</span><br><span class="line">		/hadoop/hdfs/data,</span><br><span class="line">		/data/hadoop/hdfs</span><br><span class="line">	&lt;/value&gt;</span><br><span class="line">&lt;/property</span><br></pre></td></tr></table></figure>
+<p>将多个目录用逗号隔开，所以只要将新磁盘分区挂载在新目录上（分区方式可以自己决定,最好永久挂载），将需要添加的新目录设置用户权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R hdfs:hadoop dirPath</span><br></pre></td></tr></table></figure></p>
+<p>修改dfs.datanode.data.dir，重启datanode即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs dfsadmin -report</span><br></pre></td></tr></table></figure></p>
+<p>可以查看各个datanode的存储容量</p>
+
       
     </div>
-    
-
-
 
     
+
     
     
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HDFS/" rel="tag"># HDFS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/20/非整数0-1背包问题/" rel="next" title="非整数0-1背包问题">
+                <i class="fa fa-chevron-left"></i> 非整数0-1背包问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/mapreduce-排序/" rel="prev" title="mapreduce 排序">
+                mapreduce 排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
   </div>
 
 
@@ -456,8 +609,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -548,6 +710,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#linux层面"><span class="nav-text">linux层面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs层面"><span class="nav-text">hdfs层面</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1068,43 +1246,42 @@
   
   <script>
     
-    function showTime(Counter) {
-      var entries = [];
+    function addCount(Counter) {
       var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
 
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      Counter('get', '/classes/Counter', { where: JSON.stringify({ url: { "$in": entries } }) })
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
         .done(function ({ results }) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.url;
-            var time = item.time;
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', `/classes/Counter/${counter.objectId}`, JSON.stringify({ time: { "__op":"Increment", "amount":1 } }))
+            
+            .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            })
+            
+            .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+            })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1}))
+                .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function () {
+                  console.log('Failed to create');
+                });
+            
           }
         })
-        .fail(function ({ responseJSON }) {
-          console.log("LeanCloud Counter Error: " + responseJSON.code + " " + responseJSON.error);
-        });
+      .fail(function ({ responseJSON }) {
+        console.log('LeanCloud Counter Error:' + responseJSON.code + " " + responseJSON.error);
+      });
     }
     
 
@@ -1124,9 +1301,7 @@
             });
           };
           
-          if ($('.post-title-link').length >= 1) {
-            showTime(Counter);
-          }
+          addCount(Counter);
           
         })
     });

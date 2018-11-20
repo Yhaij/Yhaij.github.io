@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-20T14:02:33.519Z</updated>
+  <updated>2018-11-20T14:31:29.862Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,111 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MapReduce 多路径输出</title>
+    <link href="http://yoursite.com/2018/11/20/MapReduce-%E5%A4%9A%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA/"/>
+    <id>http://yoursite.com/2018/11/20/MapReduce-多路径输出/</id>
+    <published>2018-11-20T14:28:51.000Z</published>
+    <updated>2018-11-20T14:31:29.862Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;mapreduce中实现多路径输出主要使用MulitipleOutputs类&quot;&gt;&lt;a href=&quot;#mapreduce中实现多路径输出主要使用MulitipleOutputs类&quot; class=&quot;headerlink&quot; title=&quot;mapreduce中实现多路径输出主要使用MulitipleOutputs类&quot;&gt;&lt;/a&gt;mapreduce中实现多路径输出主要使用MulitipleOutputs类&lt;/h3&gt;&lt;p&gt;通过两个例子可以掌握&lt;/p&gt;
+&lt;h4 id=&quot;输入样例-mulitipleInput-txt&quot;&gt;&lt;a href=&quot;#输入样例-mulitipleInput-txt&quot; class=&quot;headerlink&quot; title=&quot;输入样例 mulitipleInput.txt&quot;&gt;&lt;/a&gt;输入样例 mulitipleInput.txt&lt;/h4&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;file1 001&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file2 002&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file3 003&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file2 004&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file1 005&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file1 006&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;file3 007&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hadoop 小文件的处理</title>
+    <link href="http://yoursite.com/2018/11/20/Hadoop-%E5%B0%8F%E6%96%87%E4%BB%B6%E7%9A%84%E5%A4%84%E7%90%86/"/>
+    <id>http://yoursite.com/2018/11/20/Hadoop-小文件的处理/</id>
+    <published>2018-11-20T14:25:05.000Z</published>
+    <updated>2018-11-20T14:27:19.354Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;hadoop的HDFS和MapReduce本身都是用户处理大量数据的大文件，对于小文件来说，由于namenode会在记录每个block对象，如果存在大量的小文件，会占用namenode的大量内存空间，而且HDFS存储文件是按block来存储，即使一个文件的大小不足一个block的大小，文件还是会占用一个block的存储空间，所以大量的小文件会对HDFS的存储和访问都带来不利的影响。&lt;br&gt;  hadoop对于小文件的处理主要有Hadoop Archive，Sequence file和CombineFileInputFormat三种方式。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>mapreduce 排序</title>
+    <link href="http://yoursite.com/2018/11/20/mapreduce-%E6%8E%92%E5%BA%8F/"/>
+    <id>http://yoursite.com/2018/11/20/mapreduce-排序/</id>
+    <published>2018-11-20T14:23:16.000Z</published>
+    <updated>2018-11-20T14:27:22.574Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;mapreduce的排序主要分部分排序、全排序和辅助排序（二次排序） 可以直接在reduce中在对数据进行排序，但是这对于reduce的负担太重，数据处理的时间消耗也会大大增加&lt;/p&gt;
+&lt;p&gt;mapreduce机制中排序只会针对键进行排序，所以如果想对某个数据进行排序，一定要将其设置为map输出的键，排序主要发生在map的spill和合并spill file阶段和reduce拉取复制map端的数据后合并成reduce文件时。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+    
+    
+      <category term="MapReduce" scheme="http://yoursite.com/tags/MapReduce/"/>
+    
+      <category term="排序" scheme="http://yoursite.com/tags/%E6%8E%92%E5%BA%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HDFS扩容</title>
+    <link href="http://yoursite.com/2018/11/20/hdfd%E6%89%A9%E5%AE%B9/"/>
+    <id>http://yoursite.com/2018/11/20/hdfd扩容/</id>
+    <published>2018-11-20T14:21:21.000Z</published>
+    <updated>2018-11-20T14:27:15.794Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;hdfs的存储容量不足，需要放入新磁盘扩容&lt;br&gt;扩容有两种方式，一种是linux层面的，一种是hdfs层面的&lt;br&gt;hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+    
+    
+      <category term="HDFS" scheme="http://yoursite.com/tags/HDFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>非整数0-1背包问题</title>
+    <link href="http://yoursite.com/2018/11/20/%E9%9D%9E%E6%95%B4%E6%95%B00-1%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2018/11/20/非整数0-1背包问题/</id>
+    <published>2018-11-20T14:12:40.000Z</published>
+    <updated>2018-11-20T14:20:28.700Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;0-1背包问题通常情况下物品的重量是整数的，采用动态规划可以解决，在解决物品重量非整数情况下的背包问题之前，我们先来回顾整数背包问题，并从中寻找解决非整数背包问题的方法。&lt;/p&gt;
+&lt;p&gt;问题定义：有n种物品和一个容量为c的背包，第i件物品的重量为_wi_，价格为_vi_,求出哪种物品组合放入背包使物品价值总和最大。&lt;/p&gt;
+&lt;h2 id=&quot;整数0-1背包问题&quot;&gt;&lt;a href=&quot;#整数0-1背包问题&quot; class=&quot;headerlink&quot; title=&quot;整数0-1背包问题&quot;&gt;&lt;/a&gt;整数0-1背包问题&lt;/h2&gt;&lt;p&gt;设$p(i,j)$表示在容量为j情况下，将物品$i，i+1…n$组合的放入背包的最优解的值&lt;/p&gt;
+&lt;p&gt;则其转移方程为&lt;/p&gt;
+&lt;p&gt;如果 $j&amp;gt;=w_i$ ，$p(i,j) = max(p(i+1,j), p(i+1,j-w_i )+v_i )$&lt;/p&gt;
+&lt;p&gt;如果 $j&amp;lt;w_i$ , $p(i,j) = p(i+1,j)$&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="http://yoursite.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="背包问题" scheme="http://yoursite.com/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>Hadoop的RPC分析</title>
@@ -60,7 +165,7 @@
     <link href="http://yoursite.com/2018/11/20/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/"/>
     <id>http://yoursite.com/2018/11/20/字符串编辑距离/</id>
     <published>2018-11-19T16:15:16.000Z</published>
-    <updated>2018-11-20T14:02:36.909Z</updated>
+    <updated>2018-11-20T14:08:36.553Z</updated>
     
     <summary type="html">
     
