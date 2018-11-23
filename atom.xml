@@ -54,6 +54,34 @@
   </entry>
   
   <entry>
+    <title>简单集群时间同步</title>
+    <link href="http://yoursite.com/2018/11/20/%E7%AE%80%E5%8D%95%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/"/>
+    <id>http://yoursite.com/2018/11/20/简单集群时间同步/</id>
+    <published>2018-11-20T14:25:05.000Z</published>
+    <updated>2018-11-23T14:04:19.964Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近集群的Hbase的其中几个节点总是连接不上，最后发现是集群之间的系统时间不同步导致的(hbase的时间戳决定节点之间的时间必须同步)。决定使用的ntp来解决集群之间的系统时间同步问题。&lt;/p&gt;
+&lt;h3 id=&quot;安装ntp&quot;&gt;&lt;a href=&quot;#安装ntp&quot; class=&quot;headerlink&quot; title=&quot;安装ntp&quot;&gt;&lt;/a&gt;安装ntp&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;yum install -y ntp&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;ntp服务器配置&quot;&gt;&lt;a href=&quot;#ntp服务器配置&quot; class=&quot;headerlink&quot; title=&quot;ntp服务器配置&quot;&gt;&lt;/a&gt;ntp服务器配置&lt;/h3&gt;&lt;p&gt;集群之间的时间同步同样采用sever/client的方式，将其中一个节点做为ntp的服务器,其余作为客户端通过ntp服务来向ntp服务器同步时间。需要选定一台作为ntp server，修该ntp的配置文件。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;vim /etc/ntp.conf&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;在restrict内容下，加入一句，限制服务器的访问类型。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# Permit all access over the loopback interface.  This could&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# be tightened as well, but to do so would effect some of&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# the administrative functions.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;restrict 127.0.0.1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;restrict -6 ::1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;restrict 10.1.13.0 mask 255.255.255.0 nomodify&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这里加入了restrict 10.1.13.0 mask 255.255.255.0 nomodify，根据子网掩码，表示访问该ntp服务器的客户端ip必须在10.1.13.1-10.1.13.254范围内，nomodify表明客户端不能更改服务端的时间参数，但是客户端可以通过服务端进行网络校时。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+    
+    
+      <category term="ntp" scheme="http://yoursite.com/tags/ntp/"/>
+    
+      <category term="集群" scheme="http://yoursite.com/tags/%E9%9B%86%E7%BE%A4/"/>
+    
+  </entry>
+  
+  <entry>
     <title>mapreduce 排序</title>
     <link href="http://yoursite.com/2018/11/20/mapreduce-%E6%8E%92%E5%BA%8F/"/>
     <id>http://yoursite.com/2018/11/20/mapreduce-排序/</id>
