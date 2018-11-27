@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="https://www.seanjiang.cn/"/>
   <updated>2018-11-23T14:21:42.750Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://www.seanjiang.cn/</id>
   
   <author>
     <name>sean</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>简单集群时间同步</title>
-    <link href="http://yoursite.com/2018/11/22/%E7%AE%80%E5%8D%95%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/"/>
-    <id>http://yoursite.com/2018/11/22/简单集群时间同步/</id>
+    <link href="https://www.seanjiang.cn/%E7%AE%80%E5%8D%95%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5.html"/>
+    <id>https://www.seanjiang.cn/简单集群时间同步.html</id>
     <published>2018-11-22T14:25:05.000Z</published>
     <updated>2018-11-23T14:21:42.750Z</updated>
     
@@ -31,19 +31,19 @@
     
     </summary>
     
-      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+      <category term="Linux" scheme="https://www.seanjiang.cn/categories/Linux/"/>
     
     
-      <category term="ntp" scheme="http://yoursite.com/tags/ntp/"/>
+      <category term="ntp" scheme="https://www.seanjiang.cn/tags/ntp/"/>
     
-      <category term="集群" scheme="http://yoursite.com/tags/%E9%9B%86%E7%BE%A4/"/>
+      <category term="集群" scheme="https://www.seanjiang.cn/tags/%E9%9B%86%E7%BE%A4/"/>
     
   </entry>
   
   <entry>
     <title>MapReduce 多路径输出</title>
-    <link href="http://yoursite.com/2018/11/20/MapReduce-%E5%A4%9A%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA/"/>
-    <id>http://yoursite.com/2018/11/20/MapReduce-多路径输出/</id>
+    <link href="https://www.seanjiang.cn/MapReduce-%E5%A4%9A%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA.html"/>
+    <id>https://www.seanjiang.cn/MapReduce-多路径输出.html</id>
     <published>2018-11-20T14:28:51.000Z</published>
     <updated>2018-11-20T14:31:29.862Z</updated>
     
@@ -54,15 +54,15 @@
     
     </summary>
     
-      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
   </entry>
   
   <entry>
     <title>Hadoop 小文件的处理</title>
-    <link href="http://yoursite.com/2018/11/20/Hadoop-%E5%B0%8F%E6%96%87%E4%BB%B6%E7%9A%84%E5%A4%84%E7%90%86/"/>
-    <id>http://yoursite.com/2018/11/20/Hadoop-小文件的处理/</id>
+    <link href="https://www.seanjiang.cn/Hadoop-%E5%B0%8F%E6%96%87%E4%BB%B6%E7%9A%84%E5%A4%84%E7%90%86.html"/>
+    <id>https://www.seanjiang.cn/Hadoop-小文件的处理.html</id>
     <published>2018-11-20T14:25:05.000Z</published>
     <updated>2018-11-20T14:27:19.354Z</updated>
     
@@ -72,15 +72,15 @@
     
     </summary>
     
-      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
   </entry>
   
   <entry>
     <title>mapreduce 排序</title>
-    <link href="http://yoursite.com/2018/11/20/mapreduce-%E6%8E%92%E5%BA%8F/"/>
-    <id>http://yoursite.com/2018/11/20/mapreduce-排序/</id>
+    <link href="https://www.seanjiang.cn/mapreduce-%E6%8E%92%E5%BA%8F.html"/>
+    <id>https://www.seanjiang.cn/mapreduce-排序.html</id>
     <published>2018-11-20T14:23:16.000Z</published>
     <updated>2018-11-20T14:27:22.574Z</updated>
     
@@ -91,19 +91,19 @@
     
     </summary>
     
-      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
-      <category term="MapReduce" scheme="http://yoursite.com/tags/MapReduce/"/>
+      <category term="MapReduce" scheme="https://www.seanjiang.cn/tags/MapReduce/"/>
     
-      <category term="排序" scheme="http://yoursite.com/tags/%E6%8E%92%E5%BA%8F/"/>
+      <category term="排序" scheme="https://www.seanjiang.cn/tags/%E6%8E%92%E5%BA%8F/"/>
     
   </entry>
   
   <entry>
     <title>HDFS扩容</title>
-    <link href="http://yoursite.com/2018/11/20/hdfd%E6%89%A9%E5%AE%B9/"/>
-    <id>http://yoursite.com/2018/11/20/hdfd扩容/</id>
+    <link href="https://www.seanjiang.cn/hdfd%E6%89%A9%E5%AE%B9.html"/>
+    <id>https://www.seanjiang.cn/hdfd扩容.html</id>
     <published>2018-11-20T14:21:21.000Z</published>
     <updated>2018-11-23T14:33:19.032Z</updated>
     
@@ -113,17 +113,17 @@
     
     </summary>
     
-      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
-      <category term="HDFS" scheme="http://yoursite.com/tags/HDFS/"/>
+      <category term="HDFS" scheme="https://www.seanjiang.cn/tags/HDFS/"/>
     
   </entry>
   
   <entry>
     <title>非整数0-1背包问题</title>
-    <link href="http://yoursite.com/2018/11/20/%E9%9D%9E%E6%95%B4%E6%95%B00-1%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
-    <id>http://yoursite.com/2018/11/20/非整数0-1背包问题/</id>
+    <link href="https://www.seanjiang.cn/%E9%9D%9E%E6%95%B4%E6%95%B00-1%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98.html"/>
+    <id>https://www.seanjiang.cn/非整数0-1背包问题.html</id>
     <published>2018-11-20T14:12:40.000Z</published>
     <updated>2018-11-23T14:36:18.433Z</updated>
     
@@ -138,17 +138,17 @@
     
     </summary>
     
-      <category term="算法" scheme="http://yoursite.com/categories/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
     
     
-      <category term="背包问题" scheme="http://yoursite.com/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
+      <category term="背包问题" scheme="https://www.seanjiang.cn/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
     
   </entry>
   
   <entry>
     <title>Hadoop的RPC分析</title>
-    <link href="http://yoursite.com/2018/11/20/Hadoop%E7%9A%84RPC%E5%88%86%E6%9E%90/"/>
-    <id>http://yoursite.com/2018/11/20/Hadoop的RPC分析/</id>
+    <link href="https://www.seanjiang.cn/Hadoop%E7%9A%84RPC%E5%88%86%E6%9E%90.html"/>
+    <id>https://www.seanjiang.cn/Hadoop的RPC分析.html</id>
     <published>2018-11-20T12:57:52.000Z</published>
     <updated>2018-11-20T14:02:33.519Z</updated>
     
@@ -161,17 +161,17 @@
     
     </summary>
     
-      <category term="Hadoop" scheme="http://yoursite.com/categories/Hadoop/"/>
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
-      <category term="RPC" scheme="http://yoursite.com/tags/RPC/"/>
+      <category term="RPC" scheme="https://www.seanjiang.cn/tags/RPC/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2018/11/20/hello-world/"/>
-    <id>http://yoursite.com/2018/11/20/hello-world/</id>
+    <link href="https://www.seanjiang.cn/hello-world.html"/>
+    <id>https://www.seanjiang.cn/hello-world.html</id>
     <published>2018-11-20T07:27:37.167Z</published>
     <updated>2018-11-20T14:02:31.879Z</updated>
     
@@ -186,8 +186,8 @@
   
   <entry>
     <title>字符串编辑距离</title>
-    <link href="http://yoursite.com/2018/11/20/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/"/>
-    <id>http://yoursite.com/2018/11/20/字符串编辑距离/</id>
+    <link href="https://www.seanjiang.cn/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB.html"/>
+    <id>https://www.seanjiang.cn/字符串编辑距离.html</id>
     <published>2018-11-19T16:15:16.000Z</published>
     <updated>2018-11-20T15:19:39.994Z</updated>
     
@@ -198,12 +198,12 @@
     
     </summary>
     
-      <category term="算法" scheme="http://yoursite.com/categories/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
     
     
-      <category term="字符串" scheme="http://yoursite.com/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+      <category term="字符串" scheme="https://www.seanjiang.cn/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
     
-      <category term="动态规划" scheme="http://yoursite.com/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
+      <category term="动态规划" scheme="https://www.seanjiang.cn/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
     
   </entry>
   

@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="mapreduce的排序主要分部分排序、全排序和辅助排序（二次排序） 可以直接在reduce中在对数据进行排序，但是这对于reduce的负担太重，数据处理的时间消耗也会大大增加 mapreduce机制中排序只会针对键进行排序，所以如果想对某个数据进行排序，一定要将其设置为map输出的键，排序主要发生在map的spill和合并spill file阶段和reduce拉取复制map端的数据后合并成red">
+<meta name="keywords" content="MapReduce,排序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mapreduce 排序">
+<meta property="og:url" content="https://www.seanjiang.cn/mapreduce-排序.html">
+<meta property="og:site_name" content="Sean&#39;s Blog">
+<meta property="og:description" content="mapreduce的排序主要分部分排序、全排序和辅助排序（二次排序） 可以直接在reduce中在对数据进行排序，但是这对于reduce的负担太重，数据处理的时间消耗也会大大增加 mapreduce机制中排序只会针对键进行排序，所以如果想对某个数据进行排序，一定要将其设置为map输出的键，排序主要发生在map的spill和合并spill file阶段和reduce拉取复制map端的数据后合并成red">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-20T14:27:22.574Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mapreduce 排序">
+<meta name="twitter:description" content="mapreduce的排序主要分部分排序、全排序和辅助排序（二次排序） 可以直接在reduce中在对数据进行排序，但是这对于reduce的负担太重，数据处理的时间消耗也会大大增加 mapreduce机制中排序只会针对键进行排序，所以如果想对某个数据进行排序，一定要将其设置为map输出的键，排序主要发生在map的spill和合并spill file阶段和reduce拉取复制map端的数据后合并成red">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sean's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://www.seanjiang.cn/mapreduce-排序.html">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>mapreduce 排序 | Sean's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sean's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/mapreduce-排序.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mapreduce 排序
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-20 22:23:16 / 修改时间：22:27:22" itemprop="dateCreated datePublished" datetime="2018-11-20T22:23:16+08:00">2018-11-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/mapreduce-排序.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/mapreduce-排序.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/mapreduce-排序.html" class="leancloud_visitors" data-flag-title="mapreduce 排序">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>mapreduce的排序主要分部分排序、全排序和辅助排序（二次排序） 可以直接在reduce中在对数据进行排序，但是这对于reduce的负担太重，数据处理的时间消耗也会大大增加</p>
+<p>mapreduce机制中排序只会针对键进行排序，所以如果想对某个数据进行排序，一定要将其设置为map输出的键，排序主要发生在map的spill和合并spill file阶段和reduce拉取复制map端的数据后合并成reduce文件时。</p>
+<a id="more"></a>
+<h2 id="排序的设置和调用的顺序"><a href="#排序的设置和调用的顺序" class="headerlink" title="排序的设置和调用的顺序"></a>排序的设置和调用的顺序</h2><p>排序类及其方法调用主要遵循以下顺序：</p>
+<ol>
+<li><p>如果设置mapreduce.job.output.key.comparator.class或设置了Job类的setSortComparatorClass(),则会使用设置的类的实例进行排序。该类需要继承WritableComparator</p>
+</li>
+<li><p>如果1中没有设置，键的类型是WritableComparable的子类，就会调用该键的compareTo（)的方法</p>
+</li>
+<li><p>如果上述都RawComparator将字节流反序列化为WritableComparable对象，再调用其compareTo（)进行比较</p>
+</li>
+</ol>
+<p>从以上可以看出，如果重写RawComparator的compare方法，在字节流的时候就进行所需的键的比较是性能最好的，因为这样无需在排序进行反序列化，但编写的难度相对较高。</p>
+<h2 id="部分排序"><a href="#部分排序" class="headerlink" title="部分排序"></a>部分排序</h2><p>mapreduce根据键的排序使得每个reduce输出的文件都是排序好的</p>
+<h2 id="全排序"><a href="#全排序" class="headerlink" title="全排序"></a>全排序</h2><p>对于全排序最简单的方法是将所有的方法是将reduce的个数设置为1，但是如果数据量太大会对reduce造成过大的负担。</p>
+<p>解决的方法可以通过改写partition来调整使得每个reduce之间数据保持有序，即保证一段连续区间内的数据都落在一个分区里，这样只要对reduce的输出文件排好序就可以达到全局排序。但是如果靠人为的划分分区，需要知道键的范围，并且很容易造成数据的倾斜，造成有的reduce分到数据特别多，而有的却很少，理想情况下是个分区记录数大致相等。解决方法是通过多数据进行采样，通过采样一小部分数据得到排序数据的大致分布，从而制定出如何划分分区。</p>
+<p>hadoop内置了若干采样器，用于需要实现自定义采样的话需要继承InputSampler类(该类实现了Sampler接口)重写getSample方法，返回采样的键。InputSampler实现了静态方法writePartitionFile()方法来在致指定的hdfs路径下创建一个顺序文件来存储定义分区的键。将顺序文件加入分布式缓存，由TotalOrderPartitioner使用并未排序作业创建分区。</p>
+<p>例子，使用采样分区的方式对一系列随机生成的服从正态分布的数据进行全排序。</p>
+<p>原始输入数据，满足正态分布，随机生成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -cat /user/test/yhj/random/input/random.txt | head</span><br><span class="line">1281658</span><br><span class="line">449107</span><br><span class="line">1195471</span><br><span class="line">-422913</span><br><span class="line">1970634</span><br><span class="line">916817</span><br><span class="line">-557165</span><br><span class="line">-1435819</span><br><span class="line">1924747</span><br><span class="line">-262067</span><br></pre></td></tr></table></figure>
+<p>重写InputFormat和RecordReader使直接读入的值是IntWritable类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFileIntputFormat</span> <span class="keyword">extends</span> <span class="title">FileInputFormat</span>&lt;<span class="title">LongWritable</span>, <span class="title">IntWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> RecordReader&lt;LongWritable, IntWritable&gt; <span class="title">createRecordReader</span><span class="params">(InputSplit inputSplit, TaskAttemptContext taskAttemptContext)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            RecordReader&lt;LongWritable, IntWritable&gt; reader = <span class="keyword">new</span> MyRecordReader();</span><br><span class="line">            reader.initialize(inputSplit, taskAttemptContext);</span><br><span class="line">            <span class="keyword">return</span> reader;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRecordReader</span> <span class="keyword">extends</span> <span class="title">RecordReader</span>&lt;<span class="title">LongWritable</span>, <span class="title">IntWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> LineRecordReader lineRecordReader;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyRecordReader</span><span class="params">()</span></span>&#123;</span><br><span class="line">            lineRecordReader = <span class="keyword">new</span> LineRecordReader();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(InputSplit inputSplit, TaskAttemptContext taskAttemptContext)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            lineRecordReader.initialize(inputSplit, taskAttemptContext);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">nextKeyValue</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> lineRecordReader.nextKeyValue();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> LongWritable <span class="title">getCurrentKey</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> lineRecordReader.getCurrentKey();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> IntWritable <span class="title">getCurrentValue</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            IntWritable value = <span class="keyword">new</span> IntWritable(Integer.parseInt(lineRecordReader.getCurrentValue().toString()));</span><br><span class="line">            <span class="keyword">return</span> value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getProgress</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> lineRecordReader.getProgress();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">            lineRecordReader.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>由于默认的采样器都是对键进行采样，而我们读入的键是偏移量，真正排序采样的是值，所以需要重写采样器，这里继承了RandomSampler，对值进行随机采样，RandomSampler的初始化需要三个参数RandomSampler(double freq, int numSamples, int maxSplitsSampled) freq代表采样频率，numSamples代表样本最大样本数，maxSplitsSampled代表最大分区数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MySample</span> <span class="keyword">extends</span> <span class="title">InputSampler</span>.<span class="title">RandomSampler</span>&lt;<span class="title">Object</span>, <span class="title">IntWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MySample</span><span class="params">(<span class="keyword">double</span> freq, <span class="keyword">int</span> numSamples)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(freq, numSamples);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MySample</span><span class="params">(<span class="keyword">double</span> freq, <span class="keyword">int</span> numSamples, <span class="keyword">int</span> maxSplitsSampled)</span></span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(freq, numSamples, maxSplitsSampled);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> IntWritable[] getSample(InputFormat&lt;Object, IntWritable&gt; inf, Job job) <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">            List&lt;InputSplit&gt; splits = inf.getSplits(job);</span><br><span class="line">            List&lt;IntWritable&gt; samples = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">int</span> splitToSample = Math.min(<span class="keyword">this</span>.numSamples, splits.size());</span><br><span class="line">            Random random = <span class="keyword">new</span> Random();</span><br><span class="line">            <span class="keyword">long</span> seed = random.nextLong();</span><br><span class="line">            random.setSeed(seed);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//随机交换split</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; splits.size(); i++)&#123;</span><br><span class="line">                InputSplit tmp = splits.get(i);</span><br><span class="line">                <span class="keyword">int</span> index = random.nextInt(splits.size());</span><br><span class="line">                splits.set(i, splits.get(index));</span><br><span class="line">                splits.set(index, tmp);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//采样</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span>  i = <span class="number">0</span>; i &lt; splitToSample || i &lt; <span class="keyword">this</span>.numSamples &amp;&amp; samples.size() &lt; <span class="keyword">this</span>.numSamples ; i++)&#123;</span><br><span class="line">                TaskAttemptContext sampleContext = <span class="keyword">new</span> TaskAttemptContextImpl(job.getConfiguration(), <span class="keyword">new</span> TaskAttemptID());</span><br><span class="line">                RecordReader&lt;Object, IntWritable&gt; reader = inf.createRecordReader(splits.get(i), sampleContext);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">while</span> (reader.nextKeyValue()) &#123;</span><br><span class="line">                    <span class="comment">//根据采样频率采样</span></span><br><span class="line">                    <span class="keyword">if</span> (random.nextDouble() &lt; <span class="keyword">this</span>.freq) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (samples.size() &lt; <span class="keyword">this</span>.numSamples) &#123;</span><br><span class="line">                            IntWritable value = <span class="keyword">new</span> IntWritable();</span><br><span class="line">                            samples.add(ReflectionUtils.copy(job.getConfiguration(), reader.getCurrentValue(), value));</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            <span class="keyword">int</span> index = random.nextInt(<span class="keyword">this</span>.numSamples);</span><br><span class="line">                            <span class="keyword">if</span> (index != <span class="keyword">this</span>.numSamples) &#123;</span><br><span class="line">                                IntWritable value = <span class="keyword">new</span> IntWritable();</span><br><span class="line">                                samples.set(index, ReflectionUtils.copy(job.getConfiguration(), reader.getCurrentValue(), value));</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">this</span>.freq *= (<span class="keyword">double</span>) (<span class="keyword">this</span>.numSamples - <span class="number">1</span>) / (<span class="keyword">double</span>) <span class="keyword">this</span>.numSamples;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                reader.close();</span><br><span class="line">            &#125;</span><br><span class="line">            IntWritable[] result = <span class="keyword">new</span> IntWritable[samples.size()];</span><br><span class="line">            samples.toArray(result);</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>入口函数和map函数，reduce函数采用默认实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SortByTotalPartitioner</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="keyword">implements</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SortByTotalPartitionerMap</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">IntWritable</span>, <span class="title">IntWritable</span>, <span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, IntWritable value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            context.write(value, NullWritable.get());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Job job = JobDefaultInit.getSubmintDefaultJob(<span class="keyword">this</span>, getConf(),</span><br><span class="line">                <span class="string">"E:\\JavaProjects\\hdpWork\\target\\hdpWork.jar"</span>, args);</span><br><span class="line"><span class="comment">//        InputSampler.Sampler&lt;&gt;</span></span><br><span class="line">        job.setMapperClass(SortByTotalPartitionerMap.class);</span><br><span class="line">        job.setInputFormatClass(MyFileIntputFormat.class);</span><br><span class="line">        job.setOutputKeyClass(IntWritable.class);</span><br><span class="line">        job.setOutputValueClass(NullWritable.class);</span><br><span class="line">        job.setPartitionerClass(TotalOrderPartitioner.class);</span><br><span class="line">        job.setNumReduceTasks(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        InputSampler.Sampler&lt;Object, IntWritable&gt; sampler = <span class="keyword">new</span> MySample(<span class="number">0.1</span>, <span class="number">1000</span>, <span class="number">10</span>);  <span class="comment">//构造采样器</span></span><br><span class="line">        TotalOrderPartitioner.setPartitionFile(job.getConfiguration(), <span class="keyword">new</span> Path(<span class="string">"/partitionFile"</span>));   <span class="comment">//设置共享分区文件路径</span></span><br><span class="line">        InputSampler.writePartitionFile(job, sampler);   <span class="comment">//写入分区文件,其中调用了 TotalOrderPartitioner.getPartitionFile获取文件路径</span></span><br><span class="line">        <span class="comment">//将共享分区文件加入到分布式缓存中</span></span><br><span class="line">        String partitionFile = TotalOrderPartitioner.getPartitionFile(job.getConfiguration());</span><br><span class="line">        URI partitionUri = <span class="keyword">new</span> URI(partitionFile);</span><br><span class="line">        job.addCacheFile(partitionUri);</span><br><span class="line">        <span class="keyword">return</span> job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">0</span>:<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        System.exit(ToolRunner.run(<span class="keyword">new</span> SortByTotalPartitioner(), args));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="辅助排序"><a href="#辅助排序" class="headerlink" title="辅助排序"></a>辅助排序</h2><p>有时候我们需要对键和值一起参与排序或者排序收到两个数据的共同影响，由于mapreduce只能支持对键排序，所以只能自定义Writable类型，支持存储多种数据，并重写compareTo()方法或者通过setSortComparatorClass()设置二次排序的方式。由于reduce的输入是key和value的迭代器，默认reduce是将键相同的值放在一个迭代器中，而由于二次排序修改了键的比较方法，因此有时候需要修改分组排序，job.setGroupingComparatorClass设置分组排序，通过分组比较器判断为相同即返回为0的代表在同一组中，这时候的分组的键将会取组中第一个的键，也就是排好序后组中第一个的键。</p>
+<p>例子，选取下面数据中，每一年的最高温度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">1990    28</span><br><span class="line">1995    34</span><br><span class="line">1992    -12</span><br><span class="line">1994    2</span><br><span class="line">1995    12</span><br><span class="line">1993    34</span><br><span class="line">1992    32</span><br><span class="line">1993    1</span><br><span class="line">1994    8</span><br><span class="line">1995    23</span><br><span class="line">1993    24</span><br><span class="line">1993    42</span><br><span class="line">1994    32</span><br><span class="line">1992    30</span><br><span class="line">1991    22</span><br><span class="line">1993    26</span><br><span class="line">1990    28</span><br><span class="line">1992    11</span><br><span class="line">1990    18</span><br><span class="line">1994    16</span><br><span class="line">1992    15</span><br><span class="line">1994    4</span><br><span class="line">1990    28</span><br><span class="line">1995    5</span><br><span class="line">1990    28</span><br><span class="line">1992    3</span><br><span class="line">1990    28</span><br></pre></td></tr></table></figure>
+<p>我们需要将年份和温度都参与排序，因此需要自定义Writable类型，同时存储、序列化年份和温度</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparator;</span><br><span class="line"><span class="keyword">import</span> java.io.DataInput;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutput;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntPairWritable</span> <span class="keyword">implements</span> <span class="title">WritableComparable</span>&lt;<span class="title">IntPairWritable</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> year;</span><br><span class="line">    <span class="keyword">int</span> tempeture;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IntPairWritable</span><span class="params">()</span></span>&#123;</span><br><span class="line">        year = <span class="number">0</span>;</span><br><span class="line">        tempeture = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IntPairWritable</span><span class="params">(IntWritable year, IntWritable tempeture)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.year  = year.get();</span><br><span class="line">        <span class="keyword">this</span>.tempeture = tempeture.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IntPairWritable</span><span class="params">(<span class="keyword">int</span> year, <span class="keyword">int</span> tempeture)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.year = year;</span><br><span class="line">        <span class="keyword">this</span>.tempeture = tempeture;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getYear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> year;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTempeture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tempeture;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setYear</span><span class="params">(<span class="keyword">int</span> year)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.year = year;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTempeture</span><span class="params">(<span class="keyword">int</span> tempeture)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tempeture = tempeture;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> IntPairWritable))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        IntPairWritable other = (IntPairWritable)obj;</span><br><span class="line">        <span class="keyword">return</span> other.year == year &amp;&amp; other.tempeture == tempeture;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(IntPairWritable o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> cmp = year - o.getYear();</span><br><span class="line">        <span class="keyword">if</span>(cmp != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> cmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tempeture - o.getTempeture();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 序列化到输出流中</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataOutput</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(DataOutput dataOutput)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        dataOutput.writeInt(year);</span><br><span class="line">        dataOutput.writeInt(tempeture);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从输入流中反序列化读入</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataInput</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFields</span><span class="params">(DataInput dataInput)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        year = dataInput.readInt();</span><br><span class="line">        tempeture = dataInput.readInt();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Integer(year).hashCode()*<span class="number">163</span> + <span class="keyword">new</span> Integer(tempeture).hashCode();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> year + <span class="string">"\t"</span> + tempeture;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义Writable类型的排序比较器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Comparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Comparator</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(IntPairWritable.class, <span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable a, WritableComparable b)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> tmp =  ((IntPairWritable)a).getYear() - ((IntPairWritable)b).getYear();</span><br><span class="line">            <span class="keyword">if</span>(tmp != <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> tmp;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> - (((IntPairWritable)a).getTempeture() - ((IntPairWritable)b).getTempeture());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照年份来分区和分组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 只按照年份来分区</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">YearPartition</span> <span class="keyword">extends</span> <span class="title">Partitioner</span>&lt;<span class="title">IntPairWritable</span>, <span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(IntPairWritable intPairWritable, NullWritable nullWritable, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Math.abs(intPairWritable.getYear()) % i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 分组只按照年份来比较</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">GroupComparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GroupComparator</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(IntPairWritable.class, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable a, WritableComparable b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ((IntPairWritable)a).getYear() - ((IntPairWritable)b).getYear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样同年份的数据会在同个分区中，也就是在一个reduce下，reduce的分组是按照年份来比较的，那么每个分组中的数据的年份是相同的，在年份相同的情况下按照温度从大到下排序，因此每个组的键取的是组中的第一个，也就是该年份下最大温度所在的IntPairWritable</p>
+<p>map、reduce及其入口函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxTemperatureUsingSecondSort</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="keyword">implements</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxTemperatureUsingSecondSortMap</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">IntPairWritable</span>, <span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">        IntPairWritable outKey = <span class="keyword">new</span> IntPairWritable();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            String[] infos = value.toString().split(<span class="string">"\t"</span>);</span><br><span class="line">            outKey.setYear(Integer.parseInt(infos[<span class="number">0</span>]));</span><br><span class="line">            outKey.setTempeture(Integer.parseInt(infos[<span class="number">1</span>]));</span><br><span class="line">            context.write(outKey, NullWritable.get());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * reduce的key存储着该年份下的最高气味</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxTemperatureUsingSecondSortReduce</span> <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">IntPairWritable</span>, <span class="title">NullWritable</span>, <span class="title">IntPairWritable</span>, <span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(IntPairWritable key, Iterable&lt;NullWritable&gt; values, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            context.write(key, NullWritable.get());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Job job = JobDefaultInit.getSubmintDefaultJob(<span class="keyword">this</span>, getConf(),</span><br><span class="line">                <span class="string">"E:\\JavaProjects\\hdpWork\\target\\hdpWork.jar"</span>, args);</span><br><span class="line">        job.setJobName(<span class="string">"Max Temperature Using Second Sort"</span>);</span><br><span class="line">        job.setMapperClass(MaxTemperatureUsingSecondSortMap.class);</span><br><span class="line">        job.setReducerClass(MaxTemperatureUsingSecondSortReduce.class);</span><br><span class="line">        job.setPartitionerClass(YearPartition.class);</span><br><span class="line">        job.setSortComparatorClass(IntPairWritable.Comparator.class);</span><br><span class="line">        job.setGroupingComparatorClass(GroupComparator.class);</span><br><span class="line">        job.setOutputKeyClass(IntPairWritable.class);</span><br><span class="line">        job.setOutputValueClass(NullWritable.class);</span><br><span class="line">        <span class="keyword">return</span> job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.exit(ToolRunner.run(<span class="keyword">new</span> MaxTemperatureUsingSecondSort(), args));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序结果,由于只有一个reduce，因此年份按照排序从小到大，如果想要在多个reduce中保存年份的全局排序，应该按照全区排序编写合适的分区方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1990</span>    <span class="number">28</span></span><br><span class="line"><span class="number">1991</span>    <span class="number">22</span></span><br><span class="line"><span class="number">1992</span>    <span class="number">32</span></span><br><span class="line"><span class="number">1993</span>    <span class="number">42</span></span><br><span class="line"><span class="number">1994</span>    <span class="number">32</span></span><br><span class="line"><span class="number">1995</span>    <span class="number">34</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          
+            <a href="/tags/排序/" rel="tag"># 排序</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hdfd扩容.html" rel="next" title="HDFS扩容">
+                <i class="fa fa-chevron-left"></i> HDFS扩容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Hadoop-小文件的处理.html" rel="prev" title="Hadoop 小文件的处理">
+                Hadoop 小文件的处理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">sean</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#排序的设置和调用的顺序"><span class="nav-text">排序的设置和调用的顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部分排序"><span class="nav-text">部分排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全排序"><span class="nav-text">全排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#辅助排序"><span class="nav-text">辅助排序</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sean</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz',
+        appKey: 'no8wCVViVFjBve3FT8ogpaFg',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function ({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', `/classes/Counter/${counter.objectId}`, JSON.stringify({ time: { "__op":"Increment", "amount":1 } }))
+            
+            .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            })
+            
+            .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+            })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1}))
+                .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function () {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+      .fail(function ({ responseJSON }) {
+        console.log('LeanCloud Counter Error:' + responseJSON.code + " " + responseJSON.error);
+      });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + "jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz")
+        .done(function ({ api_server }) {
+          var Counter = function (method, url, data) {
+            return $.ajax({
+              method: method,
+              url: `https://${api_server}/1.1${url}`,
+              headers: {
+                'X-LC-Id': "jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz",
+                'X-LC-Key': "no8wCVViVFjBve3FT8ogpaFg",
+                'Content-Type': 'application/json',
+              },
+              data: data,
+            });
+          };
+          
+          addCount(Counter);
+          
+        })
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
