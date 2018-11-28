@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Sean&#39;s Blog">
 <meta property="og:description" content="客户端的写缓存HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。 HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-28T14:35:01.622Z">
+<meta property="og:updated_time" content="2018-11-28T14:37:19.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HBase客户端的写缓存BufferedMutator">
 <meta name="twitter:description" content="客户端的写缓存HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。 HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量">
@@ -425,7 +425,7 @@
                 
               
 
-              <time title="创建时间：2018-11-28 22:35:16 / 修改时间：22:35:01" itemprop="dateCreated datePublished" datetime="2018-11-28T22:35:16+08:00">2018-11-28</time>
+              <time title="创建时间：2018-11-28 22:35:16 / 修改时间：22:37:19" itemprop="dateCreated datePublished" datetime="2018-11-28T22:35:16+08:00">2018-11-28</time>
             
 
             
@@ -505,6 +505,7 @@
       
         <h2 id="客户端的写缓存"><a href="#客户端的写缓存" class="headerlink" title="客户端的写缓存"></a>客户端的写缓存</h2><p>HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。</p>
 <p>HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量或者用户强制提交是才将数据一次性提交到HBase的服务器。这个缓冲区可以通过调用 <code>HTable.setAutoFlush(false)</code> 来开启。而新版HBbase的API中使用了BufferedMutator替换了老版的缓冲区，通过BufferedMutator对象提交的数据自动存放在缓冲区中。</p>
+<a id="more"></a>
 <h2 id="BufferedMutator"><a href="#BufferedMutator" class="headerlink" title="BufferedMutator"></a>BufferedMutator</h2><p>BufferedMutator通过mutate方法提交数据，flush方法可以强制刷新缓冲区提交数据，在执行close方法之前也会刷新缓冲区。</p>
 <p>BufferedMutator是通过设定BufferedMutator.ExceptionListener监听器来异步处理异常，重写onException来实现异常处理，该监听器用来监听接受服务器端发送回来的错误消息。</p>
 <p>用户可以通过设定BufferedMutatorParams的来定制符合要求的BufferedMutator。比如缓冲区的大小通过BufferedMutatorParams中的writeBufferSize方法设置（缓冲区的大小也可以通过配置文件的 <code>hbase.client.write.buffer</code>设置，值为long类型，单位为byte），异常监听器也是在BufferedMutatorParams中设置。</p>

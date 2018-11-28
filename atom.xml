@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-11-28T14:35:01.622Z</updated>
+  <updated>2018-11-28T14:37:19.450Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -21,17 +21,12 @@
     <link href="https://www.seanjiang.cn/HBase%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%99%E7%BC%93%E5%AD%98BufferedMutator.html"/>
     <id>https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html</id>
     <published>2018-11-28T14:35:16.000Z</published>
-    <updated>2018-11-28T14:35:01.622Z</updated>
+    <updated>2018-11-28T14:37:19.450Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;h2 id=&quot;客户端的写缓存&quot;&gt;&lt;a href=&quot;#客户端的写缓存&quot; class=&quot;headerlink&quot;
-        
-      
+      &lt;h2 id=&quot;客户端的写缓存&quot;&gt;&lt;a href=&quot;#客户端的写缓存&quot; class=&quot;headerlink&quot; title=&quot;客户端的写缓存&quot;&gt;&lt;/a&gt;客户端的写缓存&lt;/h2&gt;&lt;p&gt;HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。&lt;/p&gt;
+&lt;p&gt;HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量或者用户强制提交是才将数据一次性提交到HBase的服务器。这个缓冲区可以通过调用 &lt;code&gt;HTable.setAutoFlush(false)&lt;/code&gt; 来开启。而新版HBbase的API中使用了BufferedMutator替换了老版的缓冲区，通过BufferedMutator对象提交的数据自动存放在缓冲区中。&lt;/p&gt;
     
     </summary>
     
@@ -47,17 +42,12 @@
     <link href="https://www.seanjiang.cn/HBase%20%E7%AE%80%E4%BB%8B.html"/>
     <id>https://www.seanjiang.cn/HBase 简介.html</id>
     <published>2018-11-28T14:33:25.000Z</published>
-    <updated>2018-11-28T14:33:49.589Z</updated>
+    <updated>2018-11-28T14:37:24.068Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;h2 id=&quot;数据模型&quot;&gt;&lt;a href=&quot;#数据模型&quot; class=&quot;headerlink&quot;
-        
-      
+      &lt;h2 id=&quot;数据模型&quot;&gt;&lt;a href=&quot;#数据模型&quot; class=&quot;headerlink&quot; title=&quot;数据模型&quot;&gt;&lt;/a&gt;数据模型&lt;/h2&gt;&lt;p&gt;在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。&lt;/p&gt;
+&lt;p&gt;hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column qualifier），一般将列限定符成为列，一行有固定的列簇（由表结构决定），一个列簇包含一系列的列，列没有固定的结构，每一行的列簇下的列可以不相同，列由添加数据决定，可以将hbase的表想象成一个Map&amp;lt;row, Map&amp;lt;column family,Map&lt;column qualifier,=&quot;&quot; value=&quot;&quot;&gt;&amp;gt;&amp;gt;,由行、列簇寻找一个key不固定的map。而且相同单元格会存储着不同的版本值，每一次存储新值会添加时间戳Timestamp，并不会覆盖掉上次值，一个hbase表默认能存储一个版本值，若第四次设置新增，则会把第一次的值覆盖掉。因此一个单元格的定位需要row,family,qualifier和timestamp来确定。&lt;/column&gt;&lt;/p&gt;
     
     </summary>
     

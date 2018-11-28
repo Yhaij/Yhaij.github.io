@@ -424,7 +424,7 @@
                 
               
 
-              <time title="创建时间：2018-11-28 22:35:16 / 修改时间：22:35:01" itemprop="dateCreated datePublished" datetime="2018-11-28T22:35:16+08:00">2018-11-28</time>
+              <time title="创建时间：2018-11-28 22:35:16 / 修改时间：22:37:19" itemprop="dateCreated datePublished" datetime="2018-11-28T22:35:16+08:00">2018-11-28</time>
             
 
             
@@ -503,25 +503,17 @@
 
       
         
-          
-            <h2 id="客户端的写缓存"><a href="#客户端的写缓存" class="headerlink" title="客户端的写缓存"></a>客户端的写缓存</h2><p>HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。</p>
+          <h2 id="客户端的写缓存"><a href="#客户端的写缓存" class="headerlink" title="客户端的写缓存"></a>客户端的写缓存</h2><p>HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。</p>
 <p>HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量或者用户强制提交是才将数据一次性提交到HBase的服务器。这个缓冲区可以通过调用 <code>HTable.setAutoFlush(false)</code> 来开启。而新版HBbase的API中使用了BufferedMutator替换了老版的缓冲区，通过BufferedMutator对象提交的数据自动存放在缓冲区中。</p>
-<h2 id="BufferedMutator"><a href="#BufferedMutator" class="headerlink" title="BufferedMutator"></a>BufferedMutator</h2><p>BufferedMutator通过mutate方法提交数据，flush方法可以强制刷新缓冲区提交数据，在执行close方法之前也会刷新缓冲区。</p>
-<p>BufferedMutator是通过设定BufferedMutator.ExceptionListener监听器来异步处理异常，重写onException来实现异常处理，该监听器用来监听接受服务器端发送回来的错误消息。</p>
-<p>用户可以通过设定BufferedMutatorParams的来定制符合要求的BufferedMutator。比如缓冲区的大小通过BufferedMutatorParams中的writeBufferSize方法设置（缓冲区的大小也可以通过配置文件的 <code>hbase.client.write.buffer</code>设置，值为long类型，单位为byte），异常监听器也是在BufferedMutatorParams中设置。</p>
-<h2 id="官方例子分析"><a href="#官方例子分析" class="headerlink" title="官方例子分析"></a>官方例子分析</h2><p>官方给出了BufferedMutator的使用例子，通过分析代码可以了解到BufferedMutator的使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BufferedMutatorExample</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="keyword">implements</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(BufferedMutatorExample.class);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//线程池的大小</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> POOL_SIZE = <span class="number">10</span>;</span><br><span class="line">  <span class="comment">//线程的数量</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TASK_COUNT = <span class="number">100</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> TableName TABLE = TableName.valueOf(<span class="string">"tanle_name"</span>);</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] FAMILY = Bytes.toBytes(<span class="string">"f"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//异常监听器的建立,当写入异常是触发该监听器</span></span><br><span class="line">    <span class="keyword">final</span> BufferedMutator.ExceptionListener listener = <span class="keyword">new</span> BufferedMutator.ExceptionListener() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span><span class="params">(RetriesExhaustedWithDetailsException e, BufferedMutator mutator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; e.getNumExceptions(); i++) &#123;</span><br><span class="line">          LOG.info(<span class="string">"Failed to sent put "</span> + e.getRow(i) + <span class="string">"."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">//创建BufferedMutatorParams对象，设置监听器</span></span><br><span class="line">    BufferedMutatorParams params = <span class="keyword">new</span> BufferedMutatorParams(TABLE)</span><br><span class="line">        .listener(listener);</span><br><span class="line">    <span class="comment">//可以改动缓冲区的大小,如下面设置缓冲区大小为4M</span></span><br><span class="line">    params.writeBufferSize(<span class="number">4</span>*<span class="number">1023</span>*<span class="number">1024</span>);</span><br><span class="line">    <span class="comment">/** 创建连接和根据BufferedMutatorParams创建BufferedMutator</span></span><br><span class="line"><span class="comment">     * 这里用到java 7的新特性 try-with-resources</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">try</span> (<span class="keyword">final</span> Connection conn = ConnectionFactory.createConnection(getConf());</span><br><span class="line">         <span class="keyword">final</span> BufferedMutator mutator = conn.getBufferedMutator(params)) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/** 线程池的建立，运行线程不断put数据 */</span></span><br><span class="line">      <span class="keyword">final</span> AtomicInteger count = <span class="keyword">new</span> AtomicInteger(<span class="number">1</span>);</span><br><span class="line">      <span class="keyword">final</span> ExecutorService workerPool = Executors.newFixedThreadPool(POOL_SIZE);</span><br><span class="line">      List&lt;Future&lt;Void&gt;&gt; futures = <span class="keyword">new</span> ArrayList&lt;&gt;(TASK_COUNT);</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; TASK_COUNT; i++) &#123;</span><br><span class="line">        futures.add(workerPool.submit(<span class="keyword">new</span> Callable&lt;Void&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> Void <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            Integer value = count.getAndIncrement();</span><br><span class="line">            Put p = <span class="keyword">new</span> Put(Bytes.toBytes(<span class="string">"task "</span> + value));</span><br><span class="line">            p.addColumn(FAMILY, Bytes.toBytes(<span class="string">"someQualifier"</span>), Bytes.toBytes(<span class="string">"task "</span> + value + <span class="string">" info"</span>));</span><br><span class="line">            mutator.mutate(p);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;));</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 结束线程和线程池</span></span><br><span class="line">      <span class="keyword">for</span> (Future&lt;Void&gt; f : futures) &#123;</span><br><span class="line">        f.get(<span class="number">5</span>, TimeUnit.MINUTES);</span><br><span class="line">      &#125;</span><br><span class="line">      workerPool.shutdown();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      LOG.info(<span class="string">"exception while creating/destroying Connection or BufferedMutator"</span>, e);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ToolRunner.run(<span class="keyword">new</span> BufferedMutatorExample(), args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的官方例子就是启动线程不断提交数据，BufferedMutator中缓冲区可以避免频繁的调用RPC，在批处理数据时及其重要，并且BufferedMutator的mutate操作是异步的，所以不会产生阻塞，这在Map-Reduce作业有很好的使用，BufferedMutator接收来自MR作业的puts，异步的批量提交数据，不影响MR作业的运行。</p>
-<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>当通过BufferedMutator批量提交发生错误时触发绑定的BufferedMutator.ExceptionListener监听器实例的onException方法，其中RetriesExhaustedWithDetailsException记录了发生错误的内容及其提交的错误内容等信息，而其余正确的提交的内容则会正确放入HBase表中。</p>
-<p>对于提交内容的检查分为客户端的检查和服务器端的检查。</p>
-<ul>
-<li>当客户端检查到提交的内容出错（比如Put未添加内容或者未指定列），会抛出客户端的错误，这样错误不会RetriesExhaustedWithDetailsException监听器接受，被其运行的线程会因错误而终止，则在该Put之后的内容都不会提交。</li>
-<li>当服务端检查到提交的内容出错（比如指定的列簇不存在），会向客户端传输错误，而这错误会被RetriesExhaustedWithDetailsException监听器接受，不会对后续提交的数据产生影响。</li>
-</ul>
-<p>Table的put,get,delete方法提交一个（put,get,delete）列表操作，其中有错误的内容时，也分客户端的检查和服务器端的检查（不同操作检查内容不同），在客户端检查出错会抛出异常终止程序，服务端异常时会传输会错误信息，但是其余正确的操作已将提交到服务端并被正确执行。</p>
-<p>try-with-resources的特性不了解可以参考 <a href="https://www.jianshu.com/p/3ab87269140c" target="_blank" rel="noopener">https://www.jianshu.com/p/3ab87269140c</a></p>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/HBase客户端的写缓存BufferedMutator.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
         
       
     </div>
@@ -621,7 +613,7 @@
                 
               
 
-              <time title="创建时间：2018-11-28 22:33:25 / 修改时间：22:33:49" itemprop="dateCreated datePublished" datetime="2018-11-28T22:33:25+08:00">2018-11-28</time>
+              <time title="创建时间：2018-11-28 22:33:25 / 修改时间：22:37:24" itemprop="dateCreated datePublished" datetime="2018-11-28T22:33:25+08:00">2018-11-28</time>
             
 
             
@@ -700,196 +692,17 @@
 
       
         
-          
-            <h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。</p>
+          <h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。</p>
 <p>hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column qualifier），一般将列限定符成为列，一行有固定的列簇（由表结构决定），一个列簇包含一系列的列，列没有固定的结构，每一行的列簇下的列可以不相同，列由添加数据决定，可以将hbase的表想象成一个Map&lt;row, Map&lt;column family,Map<column qualifier,="" value="">&gt;&gt;,由行、列簇寻找一个key不固定的map。而且相同单元格会存储着不同的版本值，每一次存储新值会添加时间戳Timestamp，并不会覆盖掉上次值，一个hbase表默认能存储一个版本值，若第四次设置新增，则会把第一次的值覆盖掉。因此一个单元格的定位需要row,family,qualifier和timestamp来确定。</column></p>
-<p>存储在HBase表中的行是按照行健的字典顺序排列下来的。</p>
-<p>如下为一个hbase表中存储的数据，com.cnn.www的people列簇可以不存储任何列和值，com.cnn.www和com.example.www列簇中的列可以不相同</p>
-<table>
-<thead>
-<tr>
-<th>Row Key</th>
-<th>Time Stamp</th>
-<th>ColumnFamily <code>contents</code></th>
-<th>ColumnFamily <code>anchor</code></th>
-<th>ColumnFamily <code>people</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>“com.cnn.www”</td>
-<td>t9</td>
-<td></td>
-<td>anchor:cnnsi.com = “CNN”</td>
-<td></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>t8</td>
-<td></td>
-<td>anchor:my.look.ca = “CNN.com”</td>
-<td></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>t6</td>
-<td>contents:html = “<html>…”</html></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>t5</td>
-<td>contents:html = “<html>…”</html></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>t3</td>
-<td>contents:html = “<html>…”</html></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>“com.example.www”</td>
-<td>t5</td>
-<td>contents:html = “<html>…”</html></td>
-<td></td>
-<td>people:author = “</td>
-</tr>
-</tbody>
-</table>
-<h2 id="实际存储"><a href="#实际存储" class="headerlink" title="实际存储"></a>实际存储</h2><p>虽然在概念级别，表可以被视为稀疏的行集，但它们是按列族物理存储的。可以随时将新的列限定符（column_family：column_qualifier）添加到现有列族。如下anchor列簇的存储表和contents列簇的存储表。</p>
-<table>
-<thead>
-<tr>
-<th>行键</th>
-<th>时间戳</th>
-<th>列族 <code>anchor</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>“com.cnn.www”</td>
-<td>T9</td>
-<td><code>anchor:cnnsi.com = &quot;CNN&quot;</code></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>T8</td>
-<td><code>anchor:my.look.ca = &quot;CNN.com&quot;</code></td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>行键</th>
-<th>时间戳</th>
-<th>的ColumnFamily <code>contents:</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>“com.cnn.www”</td>
-<td>T6</td>
-<td>内容：html =“<html> ……”</html></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>T5</td>
-<td>内容：html =“<html> ……”</html></td>
-</tr>
-<tr>
-<td>“com.cnn.www”</td>
-<td>T3</td>
-<td>内容：html =“<html> ……”</html></td>
-</tr>
-</tbody>
-</table>
-<p>概念视图中显示的空单元格根本不存储。因此，<code>contents:html</code>在时间戳处对列的值的请求<code>t8</code>将不返回任何值。同样，对<code>anchor:my.look.ca</code>时间戳记值的请求<code>t9</code>将不返回任何值。但是，如果未提供时间戳，则将返回特定列的最新值。给定多个版本，最新版本也是第一个版本，因为时间戳按降序存储。因此，<code>com.cnn.www</code>如果未指定时间戳，则对行中所有列的值的请求将是：<code>contents:html</code>来自timestamp <code>t6</code>的值，<code>anchor:cnnsi.com</code>来自timestamp <code>t9</code>的值，<code>anchor:my.look.ca</code>来自timestamp <code>t8</code>的值。</p>
-<h3 id="存储的数据类型"><a href="#存储的数据类型" class="headerlink" title="存储的数据类型"></a>存储的数据类型</h3><p>HBase通过<a href="https://hbase.apache.org/apidocs/org/apache/hadoop/hbase/client/Put.html" target="_blank" rel="noopener">Put</a>和<a href="https://hbase.apache.org/apidocs/org/apache/hadoop/hbase/client/Result.html" target="_blank" rel="noopener">Result</a>支持“bytes-in / bytes-out”接口，实际存储的是字节数组， 因此任何可以转换为字节数组的都可以存储为值。输入可以是字符串，数字，复杂对象，甚至是图像，只要它们可以呈现为字节。</p>
-<p>值的大小存在实际限制（例如，在HBase中存储10-50MB对象可能太大了）。HBase中的所有行都符合<a href="http://hbase.apache.org/book.html#datamodel" target="_blank" rel="noopener">数据模型</a>，包括版本控制。在进行设计时要考虑到这一点，以及ColumnFamily的块大小。</p>
-<h2 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h2><p>命名空间是表的逻辑分组，类似于关系型数据库系统中的数据库。命名空间提供了一下几个好处（这里不太理解具体的体现）：</p>
-<ul>
-<li>配额管理（<a href="https://issues.apache.org/jira/browse/HBASE-8410" target="_blank" rel="noopener">HBASE-8410</a>） - 限制命名空间可以使用的资源量（即区域，表）。</li>
-<li>命名空间安全管理（<a href="https://issues.apache.org/jira/browse/HBASE-9206" target="_blank" rel="noopener">HBASE-9206</a>） - 为租户提供另一级别的安全管理。</li>
-<li>区域服务器组（<a href="https://issues.apache.org/jira/browse/HBASE-6721" target="_blank" rel="noopener">HBASE-6721</a>） - 可以将命名空间/表固定到RegionServers的子集上，从而保证粗略的隔离级别。</li>
-</ul>
-<h3 id="命名空间管理"><a href="#命名空间管理" class="headerlink" title="命名空间管理"></a>命名空间管理</h3><p>可以创建，删除或更改命名空间。在表创建期间通过指定表单的完全限定表名来确定命名空间成员身份。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span> <span class="attr">namespace</span>&gt;</span>:<span class="tag">&lt;<span class="name">table</span> <span class="attr">qualifier</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span> #Create a namespace</span><br><span class="line"><span class="meta">hbase&gt;</span> create_namespace 'my_ns'</span><br><span class="line"><span class="meta">hbase&gt;</span> #create my_table in my_ns namespace</span><br><span class="line"><span class="meta">hbase&gt;</span> create 'my_ns:my_table', 'fam'</span><br><span class="line"><span class="meta">hbase&gt;</span> #drop namespace</span><br><span class="line"><span class="meta">hbase&gt;</span> drop_namespace 'my_ns'</span><br><span class="line"><span class="meta">hbase&gt;</span> #alter namespace</span><br><span class="line"><span class="meta">hbase&gt;</span> alter_namespace 'my_ns', &#123;METHOD =&gt; 'set', 'PROPERTY_NAME' =&gt; 'PROPERTY_VALUE'&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="预定义的名称空间"><a href="#预定义的名称空间" class="headerlink" title="预定义的名称空间"></a>预定义的名称空间</h3><p>有两个预定义的特殊命名空间：</p>
-<ul>
-<li>hbase - 系统命名空间，用于包含HBase内部表</li>
-<li>default - 没有明确指定名称空间的表将自动落入此名称空间</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span> #namespace=foo and table qualifier=bar</span><br><span class="line"><span class="meta">hbase&gt;</span> create 'foo:bar', 'fam'</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> #namespace=default and table qualifier=bar</span><br><span class="line"><span class="meta">hbase&gt;</span> create 'bar', 'fam'</span><br></pre></td></tr></table></figure>
-<h2 id="Hbase-shell的基本命令（持续更新）"><a href="#Hbase-shell的基本命令（持续更新）" class="headerlink" title="Hbase shell的基本命令（持续更新）"></a>Hbase shell的基本命令（持续更新）</h2><p>==hbase shell命令是对大小写敏感，写入命令要注意区分大小写。==</p>
-<ul>
-<li><p>list 命令</p>
-<p>列出所有的表名</p>
-</li>
-<li><p>describe命令</p>
-<p>查看表的信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">describe 'table_name'</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>create命令</p>
-<p>例如创建一个名为t1,列簇有f1,f2,f3的表，行健是必须的所以不许指定，每个列簇的列添加数据时指定，因为每一行数据的列都不相同。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span> create 't1', &#123;NAME =&gt; 'f1'&#125;, &#123;NAME =&gt; 'f2'&#125;, &#123;NAME =&gt; 'f3'&#125;</span><br><span class="line"><span class="meta">hbase&gt;</span> # The above in shorthand would be the following:</span><br><span class="line"><span class="meta">hbase&gt;</span> create 't1', 'f1', 'f2', 'f3'</span><br><span class="line"><span class="meta">hbase&gt;</span> create 't1', &#123;NAME =&gt; 'f1', VERSIONS =&gt; 1, TTL =&gt; 2592000, BLOCKCACHE =&gt; true&#125;</span><br><span class="line"><span class="meta">hbase&gt;</span> create 't1', &#123;NAME =&gt; 'f1', CONFIGURATION =&gt; &#123;'hbase.hstore.blockingStoreFiles' =&gt; '10'&#125;&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>enable，disable、is_disabled、disable_all命令</p>
-<p>enable，disable分别是解除禁用和禁用表，禁用表之后可以看到该表的存在，但是无法对该表的内容进行操作，is_disabled查看该表是否被禁用，(enable_all)disable_all(解除)禁用所有匹配给定正则表达式的表。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span>disable 'table_name'</span><br><span class="line"><span class="meta">hbase&gt;</span>is_disable 'table_name'</span><br><span class="line"><span class="meta">hbase&gt;</span># 禁用所有表名前缀为table的表</span><br><span class="line"><span class="meta">hbase&gt;</span>disable_all 'table*'</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>alter命令</p>
-<p>修改表结构</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span> # 改变或添加列簇的最带版本存储的版本个数为5</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', NAME =&gt; 'f1', VERSIONS =&gt; 5</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 能同时修改多个列簇</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', 'f1', &#123;NAME =&gt; 'f2', IN_MEMORY =&gt; true&#125;, &#123;NAME =&gt; 'f3', VERSIONS =&gt; 5&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 删除ns1命名空间下的t1表的f1列簇</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 'ns1:t1', NAME =&gt; 'f1', METHOD =&gt; 'delete'</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 'ns1:t1', 'delete' =&gt; 'f1'</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 能修改表的MAX_FILESIZE, READONLY, MEMSTORE_FLUSHSIZE, DURABILITY等属性，比如我们修改region的最大大小至128M</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', MAX_FILESIZE =&gt; '134217728'</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 可以通过设置表协处理器属性来添加表协处理器：</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1',</span><br><span class="line">'coprocessor'=&gt;'hdfs:///foo.jar|com.foo.FooRegionObserver|1001|arg1=1,arg2=2'</span><br><span class="line"><span class="meta">hbase&gt;</span> # 由于您可以为表配置多个协处理器，因此序列号将自动附加到属性名称以唯一标识它。</span><br><span class="line"><span class="meta">hbase&gt;</span> # 协处理器属性必须与下面的模式匹配，以便框架了解如何加载协处理器类：</span><br><span class="line"><span class="meta">hbase&gt;</span> # [coprocessor jar file location] | class name | [priority] | [arguments]</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 可以设置configuration属性在表或列簇上</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', CONFIGURATION =&gt; &#123;'hbase.hregion.scan.loadColumnFamiliesOnDemand' =&gt; 'true'&#125;</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', &#123;NAME =&gt; 'f2', CONFIGURATION =&gt; &#123;'hbase.hstore.blockingStoreFiles' =&gt; '10'&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 可以删除表范围属性</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', METHOD =&gt; 'table_att_unset', NAME =&gt; 'MAX_FILESIZE'</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', METHOD =&gt; 'table_att_unset', NAME =&gt; 'coprocessor$1'</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 可以设置REGION_REPLICATION:</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', &#123;REGION_REPLICATION =&gt; 2&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">hbase&gt;</span> # 可以同时修改多个属性</span><br><span class="line"><span class="meta">hbase&gt;</span> alter 't1', &#123; NAME =&gt; 'f1', VERSIONS =&gt; 3 &#125;,</span><br><span class="line">&#123; MAX_FILESIZE =&gt; '134217728' &#125;, &#123; METHOD =&gt; 'delete', NAME =&gt; 'f2' &#125;,</span><br><span class="line">OWNER =&gt; 'johndoe', METADATA =&gt; &#123; 'mykey' =&gt; 'myvalue' &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>drop命令</p>
-<p>删除表，在删除表之前要确保表已经disbale，这样可以防止删除表时对其他使用该表的用户造成的影响</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hbase&gt;<span class="built_in">disable</span> <span class="string">'table_name'</span></span><br><span class="line">hbase&gt;drop <span class="string">'table_name'</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>put命令</p>
-<p>例如向表t1的行健为r1的列簇为f1,列名为q1的值设为value,当存在是会设置新的时间戳的值，不存在会添加新的列。（如果不指定列名，则默认列名为空字符串）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'ns1:t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span>, ts1</span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span>, &#123;ATTRIBUTES=&gt;&#123;<span class="string">'mykey'</span>=&gt;<span class="string">'myvalue'</span>&#125;&#125;</span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span>, ts1, &#123;ATTRIBUTES=&gt;&#123;<span class="string">'mykey'</span>=&gt;<span class="string">'myvalue'</span>&#125;&#125;</span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span>, <span class="string">'value'</span>, ts1, &#123;VISIBILITY=&gt;<span class="string">'PRIVATE|SECRET'</span>&#125;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>get 命令</p>
-<p>查看表中的数据</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># 查看t1表的r1行的相关内容</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> get <span class="string">'t1'</span>, <span class="string">'r1'</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># 查看t1表的r1行的列簇为c1相关内容</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> get <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1'</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># 查看t1表的r1行的列簇为c1的列为cnam相关内容</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> get <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span></span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>scan 命令</p>
-<p>扫描表,没有像put和get简便的写法</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># 查看表"t1"中的所有数据</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> scan <span class="string">'t1'</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># scan 命令可以指定 startrow,stoprow 来 scan 多个 row</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> scan <span class="string">'user_test'</span>,&#123;COLUMNS =&gt;<span class="string">'info:username'</span>,LIMIT =&gt;10, STARTROW =&gt; <span class="string">'test'</span>, STOPROW=&gt;<span class="string">'test2'</span>&#125;</span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> <span class="comment"># 查看表"t1"中列族"c1"的所有数据,或者列族"c1"中列"cname"的所有数据</span></span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> scan  <span class="string">'t1'</span>, &#123;COLUMN =&gt; <span class="string">'f1'</span>&#125;</span></span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> scan  <span class="string">'t1'</span>, &#123;COLUMN =&gt; <span class="string">'f1:q1'</span>&#125;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>delete 命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hbase&gt;</span><span class="bash">  delete <span class="string">'t1'</span>, <span class="string">'r1'</span>, <span class="string">'f1:q1'</span></span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>可以将命令写入脚本文件一次性顺序执行，例如在hbase_commands.txt中写入要执行的hbase shell命令,可以使用如下命令执行,在脚本的结尾最好写入exit命令，否则执行完命令之后停留在客户端交互界面。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hbase shell ./hbase_commands.txt</span><br></pre></td></tr></table></figure>
-<h2 id="HBase-的API-持续更新"><a href="#HBase-的API-持续更新" class="headerlink" title="HBase 的API(持续更新)"></a>HBase 的API(持续更新)</h2><p>HBase与表操作有关的api主要有</p>
-<ul>
-<li>HBaseConfiguration（配置类），</li>
-<li>Connection（建立数据库连接类），</li>
-<li>Admin（操作表的创建，删除，修改），</li>
-<li>TableName（表名类），Table（操作表内容的增删改查），</li>
-<li>Put（对应于put命令，存储值，Table.put方法的参数），</li>
-<li>Get（对应于get命令，查看值，Table.get方法的参数），</li>
-<li>Append（在值后面追加内容，table.append方法的参数，若原本有内容，得到追加后的结果，否则返回null），</li>
-<li>Result（get返回的对象），</li>
-<li>Scan（对应于scab命令，遍历值，Table.scan方法的参数，scan在指定起始行健和终止行健时，扫描的范围是[startRow, endRow),不包括终止行），</li>
-<li>ResultScanner(scan的结果返回ResultScanner对象，扫描不会通过一次RPC请求到所有的结果，而是按行为单位请求返回的，如果请求大量数量，一次请求完会消耗大量系统资源和时间，返回的ResultScanner对象是一个迭代器，迭代得到Result对象，每次调用next方法会进行RPC请求一行数据，即使next(int nbRows)方法内部也是调用多次next()方法)</li>
-<li>Delete（对应于delete命令，删除值，Table.delete方法的参数，在没有指定时间戳的情况下，deleteColumn方法删除列的最新版本，deleteColumns方法删除所有版本，在指定时间戳的情况下，deleteColumn删除与时间戳匹配的版本，deleteColumns方法删除与时间戳相等和更早的版本）。</li>
-</ul>
-<p>Put，Get，Delete， Increment，Append等都是Row的子类，方便Tbale的batch(List&lt;? extends Row&gt; actions, Object[] results)方法批处理增删改查等操作</p>
-<p>api的详细使用请查看官方文档<a href="http://hbase.apache.org/1.2/apidocs/，这是1.2版本的，目前对于新版本的HBase来说有些过时。" target="_blank" rel="noopener">http://hbase.apache.org/1.2/apidocs/，这是1.2版本的，目前对于新版本的HBase来说有些过时。</a></p>
-<p>写的简单操作hbase表的类 <a href="https://github.com/Yhaij/HadoopLearn/tree/master/src/main/java/com/hbase/learn" target="_blank" rel="noopener">https://github.com/Yhaij/HadoopLearn/tree/master/src/main/java/com/hbase/learn</a></p>
-<h2 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h2><p>HBase提供行锁，但是在0.95版本之后客户端无法显示的得到和使用行锁，该API已经移除，只在服务端有行锁的应用。在客户端只能使用checkAndPut,checkAndDelete等行原子操作</p>
-<p><a href="https://issues.apache.org/jira/browse/HBASE-7315" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/HBASE-7315</a></p>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/HBase 简介.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
         
       
     </div>
