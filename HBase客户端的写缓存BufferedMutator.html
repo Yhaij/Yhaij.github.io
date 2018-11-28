@@ -108,13 +108,18 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sean&#39;s Blog">
-<meta property="og:url" content="https://www.seanjiang.cn/tags/ntp/index.html">
+  <meta name="description" content="客户端的写缓存HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。 HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量">
+<meta name="keywords" content="BufferedMutator">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase客户端的写缓存BufferedMutator">
+<meta property="og:url" content="https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
+<meta property="og:description" content="客户端的写缓存HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。 HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-28T14:35:01.622Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sean&#39;s Blog">
+<meta name="twitter:title" content="HBase客户端的写缓存BufferedMutator">
+<meta name="twitter:description" content="客户端的写缓存HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。 HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量">
 
 
 
@@ -123,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="https://www.seanjiang.cn/tags/ntp/">
+  <link rel="canonical" href="https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html">
 
 
 
@@ -133,7 +138,7 @@
   };
 </script>
 
-  <title>标签: ntp | Sean's Blog</title>
+  <title>HBase客户端的写缓存BufferedMutator | Sean's Blog</title>
   
 
 
@@ -182,7 +187,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -253,7 +258,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -358,82 +363,234 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>ntp<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/简单集群时间同步.html" itemprop="url">
-              
-                <span itemprop="name">简单集群时间同步</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">HBase客户端的写缓存BufferedMutator
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-11-22T22:25:05+08:00" content="2018-11-22">
-          11-22
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-28 22:35:16 / 修改时间：22:35:01" itemprop="dateCreated datePublished" datetime="2018-11-28T22:35:16+08:00">2018-11-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/HBase/" itemprop="url" rel="index"><span itemprop="name">HBase</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/HBase客户端的写缓存BufferedMutator.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/HBase客户端的写缓存BufferedMutator.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/HBase客户端的写缓存BufferedMutator.html" class="leancloud_visitors" data-flag-title="HBase客户端的写缓存BufferedMutator">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="客户端的写缓存"><a href="#客户端的写缓存" class="headerlink" title="客户端的写缓存"></a>客户端的写缓存</h2><p>HBase的每一个put操作实际上是一个RPC操作，将客户端的数据传输到服务器再返回结果，这只适用于小数据量的操作，如果数据量多的话，每次put都需要建立一次RPC的连接（TCP连接），而建立连接传输数据是需要时间的，因此减少RPC的调用可以提高数据传输的效率，减少建立连接的时间和IO消耗。</p>
+<p>HBase的客户端API提供了写缓存区，put的数据一开始放在缓存区内，当数量到达指定的容量或者用户强制提交是才将数据一次性提交到HBase的服务器。这个缓冲区可以通过调用 <code>HTable.setAutoFlush(false)</code> 来开启。而新版HBbase的API中使用了BufferedMutator替换了老版的缓冲区，通过BufferedMutator对象提交的数据自动存放在缓冲区中。</p>
+<h2 id="BufferedMutator"><a href="#BufferedMutator" class="headerlink" title="BufferedMutator"></a>BufferedMutator</h2><p>BufferedMutator通过mutate方法提交数据，flush方法可以强制刷新缓冲区提交数据，在执行close方法之前也会刷新缓冲区。</p>
+<p>BufferedMutator是通过设定BufferedMutator.ExceptionListener监听器来异步处理异常，重写onException来实现异常处理，该监听器用来监听接受服务器端发送回来的错误消息。</p>
+<p>用户可以通过设定BufferedMutatorParams的来定制符合要求的BufferedMutator。比如缓冲区的大小通过BufferedMutatorParams中的writeBufferSize方法设置（缓冲区的大小也可以通过配置文件的 <code>hbase.client.write.buffer</code>设置，值为long类型，单位为byte），异常监听器也是在BufferedMutatorParams中设置。</p>
+<h2 id="官方例子分析"><a href="#官方例子分析" class="headerlink" title="官方例子分析"></a>官方例子分析</h2><p>官方给出了BufferedMutator的使用例子，通过分析代码可以了解到BufferedMutator的使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BufferedMutatorExample</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="keyword">implements</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(BufferedMutatorExample.class);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//线程池的大小</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> POOL_SIZE = <span class="number">10</span>;</span><br><span class="line">  <span class="comment">//线程的数量</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TASK_COUNT = <span class="number">100</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> TableName TABLE = TableName.valueOf(<span class="string">"tanle_name"</span>);</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] FAMILY = Bytes.toBytes(<span class="string">"f"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//异常监听器的建立,当写入异常是触发该监听器</span></span><br><span class="line">    <span class="keyword">final</span> BufferedMutator.ExceptionListener listener = <span class="keyword">new</span> BufferedMutator.ExceptionListener() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span><span class="params">(RetriesExhaustedWithDetailsException e, BufferedMutator mutator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; e.getNumExceptions(); i++) &#123;</span><br><span class="line">          LOG.info(<span class="string">"Failed to sent put "</span> + e.getRow(i) + <span class="string">"."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">//创建BufferedMutatorParams对象，设置监听器</span></span><br><span class="line">    BufferedMutatorParams params = <span class="keyword">new</span> BufferedMutatorParams(TABLE)</span><br><span class="line">        .listener(listener);</span><br><span class="line">    <span class="comment">//可以改动缓冲区的大小,如下面设置缓冲区大小为4M</span></span><br><span class="line">    params.writeBufferSize(<span class="number">4</span>*<span class="number">1023</span>*<span class="number">1024</span>);</span><br><span class="line">    <span class="comment">/** 创建连接和根据BufferedMutatorParams创建BufferedMutator</span></span><br><span class="line"><span class="comment">     * 这里用到java 7的新特性 try-with-resources</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">try</span> (<span class="keyword">final</span> Connection conn = ConnectionFactory.createConnection(getConf());</span><br><span class="line">         <span class="keyword">final</span> BufferedMutator mutator = conn.getBufferedMutator(params)) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/** 线程池的建立，运行线程不断put数据 */</span></span><br><span class="line">      <span class="keyword">final</span> AtomicInteger count = <span class="keyword">new</span> AtomicInteger(<span class="number">1</span>);</span><br><span class="line">      <span class="keyword">final</span> ExecutorService workerPool = Executors.newFixedThreadPool(POOL_SIZE);</span><br><span class="line">      List&lt;Future&lt;Void&gt;&gt; futures = <span class="keyword">new</span> ArrayList&lt;&gt;(TASK_COUNT);</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; TASK_COUNT; i++) &#123;</span><br><span class="line">        futures.add(workerPool.submit(<span class="keyword">new</span> Callable&lt;Void&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> Void <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            Integer value = count.getAndIncrement();</span><br><span class="line">            Put p = <span class="keyword">new</span> Put(Bytes.toBytes(<span class="string">"task "</span> + value));</span><br><span class="line">            p.addColumn(FAMILY, Bytes.toBytes(<span class="string">"someQualifier"</span>), Bytes.toBytes(<span class="string">"task "</span> + value + <span class="string">" info"</span>));</span><br><span class="line">            mutator.mutate(p);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;));</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 结束线程和线程池</span></span><br><span class="line">      <span class="keyword">for</span> (Future&lt;Void&gt; f : futures) &#123;</span><br><span class="line">        f.get(<span class="number">5</span>, TimeUnit.MINUTES);</span><br><span class="line">      &#125;</span><br><span class="line">      workerPool.shutdown();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      LOG.info(<span class="string">"exception while creating/destroying Connection or BufferedMutator"</span>, e);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ToolRunner.run(<span class="keyword">new</span> BufferedMutatorExample(), args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的官方例子就是启动线程不断提交数据，BufferedMutator中缓冲区可以避免频繁的调用RPC，在批处理数据时及其重要，并且BufferedMutator的mutate操作是异步的，所以不会产生阻塞，这在Map-Reduce作业有很好的使用，BufferedMutator接收来自MR作业的puts，异步的批量提交数据，不影响MR作业的运行。</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>当通过BufferedMutator批量提交发生错误时触发绑定的BufferedMutator.ExceptionListener监听器实例的onException方法，其中RetriesExhaustedWithDetailsException记录了发生错误的内容及其提交的错误内容等信息，而其余正确的提交的内容则会正确放入HBase表中。</p>
+<p>对于提交内容的检查分为客户端的检查和服务器端的检查。</p>
+<ul>
+<li>当客户端检查到提交的内容出错（比如Put未添加内容或者未指定列），会抛出客户端的错误，这样错误不会RetriesExhaustedWithDetailsException监听器接受，被其运行的线程会因错误而终止，则在该Put之后的内容都不会提交。</li>
+<li>当服务端检查到提交的内容出错（比如指定的列簇不存在），会向客户端传输错误，而这错误会被RetriesExhaustedWithDetailsException监听器接受，不会对后续提交的数据产生影响。</li>
+</ul>
+<p>Table的put,get,delete方法提交一个（put,get,delete）列表操作，其中有错误的内容时，也分客户端的检查和服务器端的检查（不同操作检查内容不同），在客户端检查出错会抛出异常终止程序，服务端异常时会传输会错误信息，但是其余正确的操作已将提交到服务端并被正确执行。</p>
+<p>try-with-resources的特性不了解可以参考 <a href="https://www.jianshu.com/p/3ab87269140c" target="_blank" rel="noopener">https://www.jianshu.com/p/3ab87269140c</a></p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/BufferedMutator/" rel="tag"># BufferedMutator</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/HBase 简介.html" rel="next" title="HBase 简介">
+                <i class="fa fa-chevron-left"></i> HBase 简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -454,8 +611,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -558,6 +724,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端的写缓存"><span class="nav-text">客户端的写缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BufferedMutator"><span class="nav-text">BufferedMutator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方例子分析"><span class="nav-text">官方例子分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误处理"><span class="nav-text">错误处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -695,6 +877,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
 
   
 
@@ -1074,43 +1260,42 @@
   
   <script>
     
-    function showTime(Counter) {
-      var entries = [];
+    function addCount(Counter) {
       var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
 
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      Counter('get', '/classes/Counter', { where: JSON.stringify({ url: { "$in": entries } }) })
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
         .done(function ({ results }) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.url;
-            var time = item.time;
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', `/classes/Counter/${counter.objectId}`, JSON.stringify({ time: { "__op":"Increment", "amount":1 } }))
+            
+            .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            })
+            
+            .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+            })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1}))
+                .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function () {
+                  console.log('Failed to create');
+                });
+            
           }
         })
-        .fail(function ({ responseJSON }) {
-          console.log("LeanCloud Counter Error: " + responseJSON.code + " " + responseJSON.error);
-        });
+      .fail(function ({ responseJSON }) {
+        console.log('LeanCloud Counter Error:' + responseJSON.code + " " + responseJSON.error);
+      });
     }
     
 
@@ -1130,9 +1315,7 @@
             });
           };
           
-          if ($('.post-title-link').length >= 1) {
-            showTime(Counter);
-          }
+          addCount(Counter);
           
         })
     });

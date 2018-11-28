@@ -508,9 +508,9 @@
 <p>命令：hadoop archive -archiveName  归档名称 -p 父目录 [-r &lt;复制因子&gt;]  原路径（可以多个）  目的路径</p>
 <p>-archiveNames设置归档生成文件的名字</p>
 <p>-p 需要进行归档的文件的父目录</p>
-<p>例子：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> hadoop fs -ls /user/test/yhj/input/</span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r--r--   3 root hdfs        760 2018-07-04 11:48 /user/test/yhj/input/word1.txt</span><br><span class="line">-rw-r--r--   3 root hdfs         82 2018-07-04 11:48 /user/test/yhj/input/word2.txt</span><br><span class="line">-rw-r--r--   3 root hdfs       1738 2018-07-04 11:48 /user/test/yhj/input/word3.txt</span><br><span class="line"><span class="meta">$</span> hadoop archive -archiveName word.har -p /user/test/yhj/input/ word1.txt word2.txt word3.txt /user/test/yhj/harInput/</span><br><span class="line"><span class="meta">$</span> hadoop fs -ls /user/test/yhj/harInput/</span><br><span class="line">Found 1 items</span><br><span class="line">drwxr-xr-x   - hdfs hdfs          0 2018-07-05 20:18 /user/test/yhj/harInput/word.har</span><br></pre></td></tr></table></figure></p>
+<p>例子：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hadoop fs -ls /user/<span class="built_in">test</span>/yhj/input/</span></span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r--r--   3 root hdfs        760 2018-07-04 11:48 /user/test/yhj/input/word1.txt</span><br><span class="line">-rw-r--r--   3 root hdfs         82 2018-07-04 11:48 /user/test/yhj/input/word2.txt</span><br><span class="line">-rw-r--r--   3 root hdfs       1738 2018-07-04 11:48 /user/test/yhj/input/word3.txt</span><br><span class="line"><span class="meta">$</span><span class="bash"> hadoop archive -archiveName word.har -p /user/<span class="built_in">test</span>/yhj/input/ word1.txt word2.txt word3.txt /user/<span class="built_in">test</span>/yhj/harInput/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hadoop fs -ls /user/<span class="built_in">test</span>/yhj/harInput/</span></span><br><span class="line">Found 1 items</span><br><span class="line">drwxr-xr-x   - hdfs hdfs          0 2018-07-05 20:18 /user/test/yhj/harInput/word.har</span><br></pre></td></tr></table></figure></p>
 <p>HAR文件的生成是通过运行一个mapreduce的程序生成，所以需要集群环境中装个mapreduce</p>
-<p>HAR是在Hadoop file system之上的一个文件系统，因此所有fs shell命令对HAR文件均可用，但使用不同的URI。另外，请注意档案是不可变的。所以，重命名，删除并创建返回一个错误，例如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> hadoop fs -ls /user/test/yhj/harInput/word.har</span><br><span class="line">Found 4 items</span><br><span class="line">-rw-r--r--   3 hdfs hdfs          0 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_SUCCESS</span><br><span class="line">-rw-r--r--   5 hdfs hdfs        255 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_index</span><br><span class="line">-rw-r--r--   5 hdfs hdfs         22 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_masterindex</span><br><span class="line">-rw-r--r--   3 hdfs hdfs       2580 2018-07-05 20:18 /user/test/yhj/harInput/word.har/part-0</span><br><span class="line"><span class="meta">$</span> hadoop fs -ls har:/user/test/yhj/harInput/word.har</span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r--r--   3 hdfs hdfs        760 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word1.txt</span><br><span class="line">-rw-r--r--   3 hdfs hdfs         82 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word2.txt</span><br><span class="line">-rw-r--r--   3 hdfs hdfs       1738 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word3.txt</span><br></pre></td></tr></table></figure></p>
+<p>HAR是在Hadoop file system之上的一个文件系统，因此所有fs shell命令对HAR文件均可用，但使用不同的URI。另外，请注意档案是不可变的。所以，重命名，删除并创建返回一个错误，例如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hadoop fs -ls /user/<span class="built_in">test</span>/yhj/harInput/word.har</span></span><br><span class="line">Found 4 items</span><br><span class="line">-rw-r--r--   3 hdfs hdfs          0 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_SUCCESS</span><br><span class="line">-rw-r--r--   5 hdfs hdfs        255 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_index</span><br><span class="line">-rw-r--r--   5 hdfs hdfs         22 2018-07-05 20:18 /user/test/yhj/harInput/word.har/_masterindex</span><br><span class="line">-rw-r--r--   3 hdfs hdfs       2580 2018-07-05 20:18 /user/test/yhj/harInput/word.har/part-0</span><br><span class="line"><span class="meta">$</span><span class="bash"> hadoop fs -ls har:/user/<span class="built_in">test</span>/yhj/harInput/word.har</span></span><br><span class="line">Found 3 items</span><br><span class="line">-rw-r--r--   3 hdfs hdfs        760 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word1.txt</span><br><span class="line">-rw-r--r--   3 hdfs hdfs         82 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word2.txt</span><br><span class="line">-rw-r--r--   3 hdfs hdfs       1738 2018-07-04 11:48 har:///user/test/yhj/harInput/word.har/word3.txt</span><br></pre></td></tr></table></figure></p>
 <p>可以看到Hadoop存档目录包含元数据（采用_index和_masterindex形式）、数据部分data（part- *）文件、归档文件的名称和部分文件中的位置（_index文件）。</p>
 <p>HAR文件也可以被mapreduce读取，路径的URI可以使用不同的URI,比如例子中的文件输入的路径URI可以下面两种方式使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hdfs://10.1.13.111:8020/user/test/yhj/harInput/word.har</span><br><span class="line">har://hdfs-10.1.13.111:8020/user/test/yhj/harInput/word.har</span><br></pre></td></tr></table></figure></p>
 <p>但是这个例子的文件来说，两个输入路径产生map的个数是不同的，har的路径产生的map有三个，对应三个word*.txt,而hdfs的路径只有一个，对应word.har/part-0</p>
@@ -652,7 +652,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -671,7 +671,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -702,7 +704,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

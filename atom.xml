@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-11-23T14:21:42.750Z</updated>
+  <updated>2018-11-28T14:35:01.622Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,58 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HBase客户端的写缓存BufferedMutator</title>
+    <link href="https://www.seanjiang.cn/HBase%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%99%E7%BC%93%E5%AD%98BufferedMutator.html"/>
+    <id>https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html</id>
+    <published>2018-11-28T14:35:16.000Z</published>
+    <updated>2018-11-28T14:35:01.622Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;客户端的写缓存&quot;&gt;&lt;a href=&quot;#客户端的写缓存&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="HBase" scheme="https://www.seanjiang.cn/categories/HBase/"/>
+    
+    
+      <category term="BufferedMutator" scheme="https://www.seanjiang.cn/tags/BufferedMutator/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HBase 简介</title>
+    <link href="https://www.seanjiang.cn/HBase%20%E7%AE%80%E4%BB%8B.html"/>
+    <id>https://www.seanjiang.cn/HBase 简介.html</id>
+    <published>2018-11-28T14:33:25.000Z</published>
+    <updated>2018-11-28T14:33:49.589Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;数据模型&quot;&gt;&lt;a href=&quot;#数据模型&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="HBase" scheme="https://www.seanjiang.cn/categories/HBase/"/>
+    
+    
+      <category term="HBase" scheme="https://www.seanjiang.cn/tags/HBase/"/>
+    
+  </entry>
   
   <entry>
     <title>简单集群时间同步</title>
