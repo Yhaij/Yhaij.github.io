@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-12-10T15:56:19.018Z</updated>
+  <updated>2018-12-10T15:58:28.903Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -21,17 +21,15 @@
     <link href="https://www.seanjiang.cn/%E8%B6%85%E5%B9%B3%E9%9D%A2.html"/>
     <id>https://www.seanjiang.cn/超平面.html</id>
     <published>2018-12-10T13:35:24.000Z</published>
-    <updated>2018-12-10T15:56:19.018Z</updated>
+    <updated>2018-12-10T15:58:28.903Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;h2 id=&quot;什么是超平面&quot;&gt;&lt;a href=&quot;#什么是超平面&quot; class=&quot;headerlink&quot; title=&quot;什么是超平面&quot;&gt;&lt;/a&gt;什么是超平面&lt;/h2&gt;&lt;h3 id=&quot;数学中的超平面&quot;&gt;&lt;a href=&quot;#数学中的超平面&quot; class=&quot;headerlink&quot;
-        
-      
+      &lt;h2 id=&quot;什么是超平面&quot;&gt;&lt;a href=&quot;#什么是超平面&quot; class=&quot;headerlink&quot; title=&quot;什么是超平面&quot;&gt;&lt;/a&gt;什么是超平面&lt;/h2&gt;&lt;h3 id=&quot;数学中的超平面&quot;&gt;&lt;a href=&quot;#数学中的超平面&quot; class=&quot;headerlink&quot; title=&quot;数学中的超平面&quot;&gt;&lt;/a&gt;数学中的超平面&lt;/h3&gt;&lt;p&gt;&lt;em&gt;以下内容均来自：&lt;a href=&quot;https://www.cnblogs.com/dengdan890730/p/5554787.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://www.cnblogs.com/dengdan890730/p/5554787.html&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E6%95%B8%E5%AD%B8&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;数学&lt;/a&gt;中，&lt;strong&gt;超平面（Hyperplane）&lt;/strong&gt;是n维欧氏空间中余维度等于1的线性子空间。这是平面中的直线、空间中的平面之推广.&lt;/p&gt;
+&lt;p&gt;$n$维超平面的方程定义为：&lt;/p&gt;
+&lt;p&gt;​                    $a_1x_1+…+a_nx_n=b$，其中$a_1,…,a_n$是不全为0的常熟&lt;/p&gt;
+&lt;p&gt;​                                    即$w^Tx+b=0，$&lt;/p&gt;
     
     </summary>
     
