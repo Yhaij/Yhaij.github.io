@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-11-28T14:37:19.450Z</updated>
+  <updated>2018-12-10T15:56:19.018Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>超平面</title>
+    <link href="https://www.seanjiang.cn/%E8%B6%85%E5%B9%B3%E9%9D%A2.html"/>
+    <id>https://www.seanjiang.cn/超平面.html</id>
+    <published>2018-12-10T13:35:24.000Z</published>
+    <updated>2018-12-10T15:56:19.018Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;什么是超平面&quot;&gt;&lt;a href=&quot;#什么是超平面&quot; class=&quot;headerlink&quot; title=&quot;什么是超平面&quot;&gt;&lt;/a&gt;什么是超平面&lt;/h2&gt;&lt;h3 id=&quot;数学中的超平面&quot;&gt;&lt;a href=&quot;#数学中的超平面&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="超平面" scheme="https://www.seanjiang.cn/tags/%E8%B6%85%E5%B9%B3%E9%9D%A2/"/>
+    
+  </entry>
   
   <entry>
     <title>HBase客户端的写缓存BufferedMutator</title>
