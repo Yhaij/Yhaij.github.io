@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-12-10T15:58:28.903Z</updated>
+  <updated>2018-12-18T15:10:41.082Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>布隆过滤器-Bloom Filter</title>
+    <link href="https://www.seanjiang.cn/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8-Bloom-Filter.html"/>
+    <id>https://www.seanjiang.cn/布隆过滤器-Bloom-Filter.html</id>
+    <published>2018-12-18T15:06:16.000Z</published>
+    <updated>2018-12-18T15:10:41.082Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;​    Bloom Filter是由 Burton Howard Bloom在1970提出的，用来判断一个元素是否存在集合中的概率算法。经过Bloom Filter判断过不在集合中的元素就一定不在集合中，若判断结果是在集合中，则可能会误判，即该元素可能不在集合中。换句话说，可能会误判，但绝不可能漏判。元素可以添加到集合中，但不会被删除（尽管可以通过“计数”过滤器来解决）; 添加到集合中的元素越多，误判的概率就越大。Bloom Filter将元素映射到位数组中，所以极大的节省空间。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="Bloom Filter" scheme="https://www.seanjiang.cn/tags/Bloom-Filter/"/>
+    
+  </entry>
   
   <entry>
     <title>超平面</title>
