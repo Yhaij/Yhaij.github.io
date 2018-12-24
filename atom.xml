@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2018-12-18T15:10:41.082Z</updated>
+  <updated>2018-12-24T04:39:29.990Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>InnoDB数据页结构及其与聚簇索引的关系</title>
+    <link href="https://www.seanjiang.cn/InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84%E5%8F%8A%E5%85%B6%E4%B8%8E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E7%9A%84%E5%85%B3%E7%B3%BB.html"/>
+    <id>https://www.seanjiang.cn/InnoDB数据页结构及其与聚簇索引的关系.html</id>
+    <published>2018-12-24T04:35:57.000Z</published>
+    <updated>2018-12-24T04:39:29.990Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;表空间&quot;&gt;&lt;a href=&quot;#表空间&quot; class=&quot;headerlink&quot; title=&quot;表空间&quot;&gt;&lt;/a&gt;表空间&lt;/h2&gt;&lt;p&gt;InnoDB中数据都存放在一个空间中，就是表空间。在文件系统中就是idb文件，每个idb文件都是一个表空间。它们之间通过表空间id来区分，在默认情况下，InnoDB使用的是共享表空间，所有数据存放在一个共享表空间ibdata1中。共享表空间可以通过参数&lt;code&gt;innodb_data_file_path&lt;/code&gt;进行配置。&lt;/p&gt;
+&lt;p&gt;可以同时配置多个文件组成一个共享表空间，如&lt;/p&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;innodb_data_file_path=/data/ibdata1:2000M;/data/ibdata2:2000M:autoextend&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这里配置了/data/ibdata1和/data/ibdata2两个文件组成表空间，如果两个文件在不同磁盘上，能降低各个磁盘的负载，可以提高数据库的性能。同时，两个文件名后跟了存储大小，表示文件的最大存放空间，而autoextend表示/data/ibdata2若用完了2000M，文件可以自动增长。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Mysql" scheme="https://www.seanjiang.cn/categories/Mysql/"/>
+    
+    
+      <category term="数据页" scheme="https://www.seanjiang.cn/tags/%E6%95%B0%E6%8D%AE%E9%A1%B5/"/>
+    
+      <category term="聚簇索引" scheme="https://www.seanjiang.cn/tags/%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95/"/>
+    
+  </entry>
   
   <entry>
     <title>布隆过滤器-Bloom Filter</title>
