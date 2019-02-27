@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Sean&#39;s Blog">
 <meta property="og:description" content="最近集群的Hbase的其中几个节点总是连接不上，最后发现是集群之间的系统时间不同步导致的(hbase的时间戳决定节点之间的时间必须同步)。决定使用的ntp来解决集群之间的系统时间同步问题。 安装ntp1yum install -y ntp ntp服务器配置集群之间的时间同步同样采用sever/client的方式，将其中一个节点做为ntp的服务器,其余作为客户端通过ntp服务来向ntp服务器同步时间">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-23T14:21:42.750Z">
+<meta property="og:updated_time" content="2019-02-27T14:02:08.458Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单集群时间同步">
 <meta name="twitter:description" content="最近集群的Hbase的其中几个节点总是连接不上，最后发现是集群之间的系统时间不同步导致的(hbase的时间戳决定节点之间的时间必须同步)。决定使用的ntp来解决集群之间的系统时间同步问题。 安装ntp1yum install -y ntp ntp服务器配置集群之间的时间同步同样采用sever/client的方式，将其中一个节点做为ntp的服务器,其余作为客户端通过ntp服务来向ntp服务器同步时间">
@@ -442,7 +442,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-23 22:21:42" itemprop="dateModified" datetime="2018-11-23T22:21:42+08:00">2018-11-23</time>
+                <time title="修改时间：2019-02-27 22:02:08" itemprop="dateModified" datetime="2019-02-27T22:02:08+08:00">2019-02-27</time>
               
             
           </span>
@@ -549,7 +549,7 @@
 <h3 id="ntp客户端配置"><a href="#ntp客户端配置" class="headerlink" title="ntp客户端配置"></a>ntp客户端配置</h3><p>客户端的配置只需指定向ntp服务器同步时间即可。比如上面配置的ntp服务器地址为10.1.13.111，则只需要加入server 10.1.13.111即可</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Use public servers from the pool.ntp.org project.</span><br><span class="line"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span><br><span class="line">#server 0.centos.pool.ntp.org iburst</span><br><span class="line">#server 1.centos.pool.ntp.org iburst</span><br><span class="line">#server 2.centos.pool.ntp.org iburst</span><br><span class="line">#server 3.centos.pool.ntp.org iburst</span><br><span class="line">server 10.1.13.111</span><br></pre></td></tr></table></figure>
 <h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>配置好了只需启动服务端和客户端的ntp服务,设置开机启动即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service ntp start</span><br><span class="line">chkconfig ntpd on</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service ntpd start</span><br><span class="line">chkconfig ntpd on</span><br></pre></td></tr></table></figure>
 <p>这里的ntp服务占用UDP的123端口，当服务启动失败可以看看是否端口被占用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nulp | grep 123</span><br></pre></td></tr></table></figure>
 <p>并且要保证防护墙的UDP的123端口开放</p>
