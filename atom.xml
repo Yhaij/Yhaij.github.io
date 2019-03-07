@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-03-07T13:48:54.680Z</updated>
+  <updated>2019-03-07T13:56:41.340Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -21,17 +21,11 @@
     <link href="https://www.seanjiang.cn/mapreduce%E8%BF%87%E7%A8%8B-shuffle%E5%92%8Csort.html"/>
     <id>https://www.seanjiang.cn/mapreduce过程-shuffle和sort.html</id>
     <published>2019-03-07T13:47:42.000Z</published>
-    <updated>2019-03-07T13:48:54.680Z</updated>
+    <updated>2019-03-07T13:56:41.340Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
-        
-      
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。&lt;/p&gt;
     
     </summary>
     

@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。 MapReduce从其名字上可以看出，有Map和Reduce两个步骤，确实在Map">
+  <meta name="description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mapreduce过程-shuffle和sort">
 <meta property="og:url" content="https://www.seanjiang.cn/mapreduce过程-shuffle和sort.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
-<meta property="og:description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。 MapReduce从其名字上可以看出，有Map和Reduce两个步骤，确实在Map">
+<meta property="og:description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/mapreduce.jpg">
-<meta property="og:updated_time" content="2019-03-07T13:48:54.680Z">
+<meta property="og:updated_time" content="2019-03-07T13:56:41.340Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mapreduce过程-shuffle和sort">
-<meta name="twitter:description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。 MapReduce从其名字上可以看出，有Map和Reduce两个步骤，确实在Map">
+<meta name="twitter:description" content="前言MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。">
 <meta name="twitter:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/mapreduce.jpg">
 
 
@@ -426,7 +426,7 @@
                 
               
 
-              <time title="创建时间：2019-03-07 21:47:42 / 修改时间：21:48:54" itemprop="dateCreated datePublished" datetime="2019-03-07T21:47:42+08:00">2019-03-07</time>
+              <time title="创建时间：2019-03-07 21:47:42 / 修改时间：21:56:41" itemprop="dateCreated datePublished" datetime="2019-03-07T21:47:42+08:00">2019-03-07</time>
             
 
             
@@ -505,6 +505,7 @@
 
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>MapReduce作为Hadoop三大核心组件之一，是一种处理大数据的分布式运算框架。虽然当前优秀的分布式运算框架有很多，如spark,flink等，其有着MapReduce没有的流式处理模型，但是MapReduce在批量计算有着独有的优势，了解其内部的运行机制，对于大数据处理技术人员和学习人员都着重要的意义。</p>
+<a id="more"></a>
 <p>MapReduce从其名字上可以看出，有Map和Reduce两个步骤，确实在MapReduce中分map端和reduce端，而连接着map端和reduce端的操作就是shuffle。接下来将详细介绍map端和reduce端以及shuffle，来了解Mapreduce是如何处理数据。（其中将不和涉及到Mapreduce任务是如何提交，启动，如何分配资源执行MapReduce任务，因为在hadoop2.0之后引入了资源调度框架yarn，这些事情已经全部都交yarn，MapReduce作业运行机制将在yarn中讲解。这里只讲MapReduce如何处理数据）。可以看到其过程的官方描述图如下</p>
 <p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/mapreduce.jpg" alt="mapreduce"></p>
 <h2 id="文件输入"><a href="#文件输入" class="headerlink" title="文件输入"></a>文件输入</h2><h3 id="文件的切分"><a href="#文件的切分" class="headerlink" title="文件的切分"></a>文件的切分</h3><p>MapReduce的输入文件，即处理数据，一般是存储在HDFS上，在将其输入到Map进行处理之前，会有一步文件切分的动作，将文件切分成多片（split），这将决定map的数量。因为一个MapReduce的任务会有很多个map，map的数量并不是由集群由多少台机器或者机器的配置决定的，而是由输入分片split的数量决定，一个split由一个map来处理，每一个map操作只处理一个输入分片。默认的split大小就是HDFS的block大小，也就是默认情况下，文件在HDFS上占多少个block，对其用MapReduce处理时就有多少个map。</p>
