@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-02-25T14:24:29.349Z</updated>
+  <updated>2019-03-07T01:16:54.000Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -17,11 +17,33 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ambaria安装HDP</title>
+    <link href="https://www.seanjiang.cn/ambaria%E5%AE%89%E8%A3%85HDP.html"/>
+    <id>https://www.seanjiang.cn/ambaria安装HDP.html</id>
+    <published>2019-03-07T01:13:50.000Z</published>
+    <updated>2019-03-07T01:16:54.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
+    
+    
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/tags/Hadoop/"/>
+    
+      <category term="Ambari" scheme="https://www.seanjiang.cn/tags/Ambari/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hadoop的搭建</title>
     <link href="https://www.seanjiang.cn/Hadoop%E7%9A%84%E6%90%AD%E5%BB%BA.html"/>
     <id>https://www.seanjiang.cn/Hadoop的搭建.html</id>
     <published>2019-02-25T14:11:00.000Z</published>
-    <updated>2019-02-25T14:24:29.349Z</updated>
+    <updated>2019-02-25T14:24:30.000Z</updated>
     
     <summary type="html">
     
@@ -43,7 +65,7 @@
     <link href="https://www.seanjiang.cn/InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84%E5%8F%8A%E5%85%B6%E4%B8%8E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E7%9A%84%E5%85%B3%E7%B3%BB.html"/>
     <id>https://www.seanjiang.cn/InnoDB数据页结构及其与聚簇索引的关系.html</id>
     <published>2018-12-24T04:35:57.000Z</published>
-    <updated>2018-12-24T04:39:29.990Z</updated>
+    <updated>2018-12-24T04:39:30.000Z</updated>
     
     <summary type="html">
     
@@ -68,7 +90,7 @@
     <link href="https://www.seanjiang.cn/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8-Bloom-Filter.html"/>
     <id>https://www.seanjiang.cn/布隆过滤器-Bloom-Filter.html</id>
     <published>2018-12-18T15:06:16.000Z</published>
-    <updated>2018-12-18T15:10:41.082Z</updated>
+    <updated>2018-12-18T15:10:42.000Z</updated>
     
     <summary type="html">
     
@@ -88,7 +110,7 @@
     <link href="https://www.seanjiang.cn/%E8%B6%85%E5%B9%B3%E9%9D%A2.html"/>
     <id>https://www.seanjiang.cn/超平面.html</id>
     <published>2018-12-10T13:35:24.000Z</published>
-    <updated>2018-12-10T15:58:28.903Z</updated>
+    <updated>2018-12-10T15:58:30.000Z</updated>
     
     <summary type="html">
     
@@ -112,7 +134,7 @@
     <link href="https://www.seanjiang.cn/HBase%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%99%E7%BC%93%E5%AD%98BufferedMutator.html"/>
     <id>https://www.seanjiang.cn/HBase客户端的写缓存BufferedMutator.html</id>
     <published>2018-11-28T14:35:16.000Z</published>
-    <updated>2018-11-28T14:37:19.450Z</updated>
+    <updated>2018-11-28T14:37:20.000Z</updated>
     
     <summary type="html">
     
@@ -133,7 +155,7 @@
     <link href="https://www.seanjiang.cn/HBase%20%E7%AE%80%E4%BB%8B.html"/>
     <id>https://www.seanjiang.cn/HBase 简介.html</id>
     <published>2018-11-28T14:33:25.000Z</published>
-    <updated>2018-11-28T14:49:59.074Z</updated>
+    <updated>2018-11-28T14:50:00.000Z</updated>
     
     <summary type="html">
     
@@ -154,7 +176,7 @@
     <link href="https://www.seanjiang.cn/%E7%AE%80%E5%8D%95%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5.html"/>
     <id>https://www.seanjiang.cn/简单集群时间同步.html</id>
     <published>2018-11-22T14:25:05.000Z</published>
-    <updated>2019-02-27T14:02:08.458Z</updated>
+    <updated>2019-02-27T14:02:10.000Z</updated>
     
     <summary type="html">
     
@@ -178,7 +200,7 @@
     <link href="https://www.seanjiang.cn/MapReduce-%E5%A4%9A%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA.html"/>
     <id>https://www.seanjiang.cn/MapReduce-多路径输出.html</id>
     <published>2018-11-20T14:28:51.000Z</published>
-    <updated>2018-11-20T14:31:29.862Z</updated>
+    <updated>2018-11-20T14:31:30.000Z</updated>
     
     <summary type="html">
     
@@ -197,7 +219,7 @@
     <link href="https://www.seanjiang.cn/Hadoop-%E5%B0%8F%E6%96%87%E4%BB%B6%E7%9A%84%E5%A4%84%E7%90%86.html"/>
     <id>https://www.seanjiang.cn/Hadoop-小文件的处理.html</id>
     <published>2018-11-20T14:25:05.000Z</published>
-    <updated>2018-11-20T14:27:19.354Z</updated>
+    <updated>2018-11-20T14:27:20.000Z</updated>
     
     <summary type="html">
     
@@ -215,7 +237,7 @@
     <link href="https://www.seanjiang.cn/mapreduce-%E6%8E%92%E5%BA%8F.html"/>
     <id>https://www.seanjiang.cn/mapreduce-排序.html</id>
     <published>2018-11-20T14:23:16.000Z</published>
-    <updated>2018-11-20T14:27:22.574Z</updated>
+    <updated>2018-11-20T14:27:24.000Z</updated>
     
     <summary type="html">
     
@@ -238,7 +260,7 @@
     <link href="https://www.seanjiang.cn/hdfd%E6%89%A9%E5%AE%B9.html"/>
     <id>https://www.seanjiang.cn/hdfd扩容.html</id>
     <published>2018-11-20T14:21:21.000Z</published>
-    <updated>2018-11-23T14:33:19.032Z</updated>
+    <updated>2018-11-23T14:33:20.000Z</updated>
     
     <summary type="html">
     
@@ -258,7 +280,7 @@
     <link href="https://www.seanjiang.cn/%E9%9D%9E%E6%95%B4%E6%95%B00-1%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98.html"/>
     <id>https://www.seanjiang.cn/非整数0-1背包问题.html</id>
     <published>2018-11-20T14:12:40.000Z</published>
-    <updated>2018-11-28T14:48:37.616Z</updated>
+    <updated>2018-11-28T14:48:38.000Z</updated>
     
     <summary type="html">
     
@@ -283,7 +305,7 @@
     <link href="https://www.seanjiang.cn/Hadoop%E7%9A%84RPC%E5%88%86%E6%9E%90.html"/>
     <id>https://www.seanjiang.cn/Hadoop的RPC分析.html</id>
     <published>2018-11-20T12:57:52.000Z</published>
-    <updated>2019-02-25T14:11:41.388Z</updated>
+    <updated>2019-02-25T14:11:42.000Z</updated>
     
     <summary type="html">
     
@@ -304,27 +326,11 @@
   </entry>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://www.seanjiang.cn/hello-world.html"/>
-    <id>https://www.seanjiang.cn/hello-world.html</id>
-    <published>2018-11-20T07:27:37.167Z</published>
-    <updated>2018-11-20T14:02:31.879Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>字符串编辑距离</title>
     <link href="https://www.seanjiang.cn/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB.html"/>
     <id>https://www.seanjiang.cn/字符串编辑距离.html</id>
     <published>2018-11-19T16:15:16.000Z</published>
-    <updated>2018-11-20T15:19:39.994Z</updated>
+    <updated>2018-11-20T15:19:40.000Z</updated>
     
     <summary type="html">
     

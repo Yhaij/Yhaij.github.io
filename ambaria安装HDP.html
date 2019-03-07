@@ -108,17 +108,24 @@
 
 
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+  <meta name="description" content="前言Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。">
+<meta name="keywords" content="Hadoop,Ambari">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://www.seanjiang.cn/hello-world.html">
+<meta property="og:title" content="ambaria安装HDP">
+<meta property="og:url" content="https://www.seanjiang.cn/ambaria安装HDP.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="前言Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-20T14:02:31.879Z">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_1.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_2.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_3.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_4.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_5.png">
+<meta property="og:updated_time" content="2019-03-07T01:16:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="ambaria安装HDP">
+<meta name="twitter:description" content="前言Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。">
+<meta name="twitter:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_1.png">
 
 
 
@@ -127,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="https://www.seanjiang.cn/hello-world.html">
+  <link rel="canonical" href="https://www.seanjiang.cn/ambaria安装HDP.html">
 
 
 
@@ -137,7 +144,7 @@
   };
 </script>
 
-  <title>Hello World | Sean's Blog</title>
+  <title>ambaria安装HDP | Sean's Blog</title>
   
 
 
@@ -382,7 +389,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/hello-world.html">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/ambaria安装HDP.html">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sean">
@@ -399,7 +406,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World
+          <h1 class="post-title" itemprop="name headline">ambaria安装HDP
               
             
           </h1>
@@ -424,7 +431,7 @@
                 
               
 
-              <time title="创建时间：2018-11-20 15:27:37 / 修改时间：22:02:31" itemprop="dateCreated datePublished" datetime="2018-11-20T15:27:37+08:00">2018-11-20</time>
+              <time title="创建时间：2019-03-07 09:13:50 / 修改时间：09:16:54" itemprop="dateCreated datePublished" datetime="2019-03-07T09:13:50+08:00">2019-03-07</time>
             
 
             
@@ -435,6 +442,24 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -443,8 +468,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hello-world.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/hello-world.html" itemprop="commentCount"></span>
+                <a href="/ambaria安装HDP.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/ambaria安装HDP.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -452,7 +477,7 @@
 
           
           
-             <span id="/hello-world.html" class="leancloud_visitors" data-flag-title="Hello World">
+             <span id="/ambaria安装HDP.html" class="leancloud_visitors" data-flag-title="ambaria安装HDP">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -484,16 +509,83 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。</p>
 <a id="more"></a>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<h2 id="按照环境"><a href="#按照环境" class="headerlink" title="按照环境"></a>按照环境</h2><ul>
+<li>五台Centos7的机器</li>
+<li>java 8</li>
+<li>python 2.7</li>
+<li>安装HDP 3.1和ambari 2.7.3  <a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/ch_Getting_Ready.html" target="_blank" rel="noopener">官方的安装文档</a></li>
+</ul>
+<p>如果之前有ambari和hdp的环境需要重装，则重装之前需要先清理环境，参考网上的一遍博客：<a href="https://imaidata.github.io/blog/uninstall_hdp_ambari/" target="_blank" rel="noopener">完全卸载HDP和Ambari</a></p>
+<p>首先机器之间需要免密登陆，免密的登陆操作这里就不细说了，网上有很多教程，在安装之前最好保证机器之间时间同步，可以使用ntp服务使机器之间的时间同步，安装使用教程可以查看之前的博客：<a href="https://www.seanjiang.cn/%E7%AE%80%E5%8D%95%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5.html#more">简单集群时间同步</a></p>
+<h2 id="本地仓库"><a href="#本地仓库" class="headerlink" title="本地仓库"></a>本地仓库</h2><p>由于ambari和HDP的yum下载太慢，因此直接下载配置本地资源</p>
+<p>如果没有http服务，需要先安装http服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install httpd</span><br><span class="line">service httpd start</span><br></pre></td></tr></table></figure>
+<p>下载ambari和HDP仓库地址:<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/ambari_repositories.html" target="_blank" rel="noopener">Ambari Repositories</a>、<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/hdp_31_repositories.html" target="_blank" rel="noopener">HDP 3.1.0 Repositories</a>,下载ambari、HDP、HDP-UTILS、HDP-GPL的tat.gz的压缩包，解压文件到/var/www/html/下</p>
+<p>在/etc/yum.repos.d/下，新建ambari.repo，添加内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[AMBARI]</span><br><span class="line">name=AMBARI</span><br><span class="line">baseurl=http://10.1.18.221/ambari/centos7/2.7.3.0-139</span><br><span class="line">path=/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://10.1.18.221/ambari/centos7/2.7.3.0-139/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<p>新建HDP.repo，内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[HDP-3.1]</span><br><span class="line">name=HDP-3.1</span><br><span class="line">baseurl=http://10.1.18.221/HDP/centos7/3.1.0.0-78</span><br><span class="line">path=/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://10.1.18.221/HDP/centos7/3.1.0.0-78/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<p>新建HDP-UTILS.repo，内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[HDP-UTILS-1.1.0.22]</span><br><span class="line">name=HDP-UTILS-1.1.0.22</span><br><span class="line">baseurl=http://10.1.18.221/HDP-UTILS/centos7/1.1.0.22</span><br><span class="line">path=/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://10.1.18.221/HDP-UTILS/centos7/1.1.0.22/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<p>新建HDP-GPL.repo，内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">name=HDP-GPL-3.1.0.0</span><br><span class="line">baseurl=http://10.1.18.221/HDP-GPL/centos7/3.1.0.0-78</span><br><span class="line">path=/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://10.1.18.221/HDP-GPL/centos7/3.1.0.0-78/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+<p>新建yum的缓存</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
+<h2 id="安装Ambari"><a href="#安装Ambari" class="headerlink" title="安装Ambari"></a>安装Ambari</h2><p>首先需要关闭SELinux</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 查看SELinux状态</span><br><span class="line">getenforce</span><br><span class="line"># 临时关闭（不用重启机器）</span><br><span class="line">setenforce 0</span><br><span class="line"># 修改配置文件永久关闭，需要重启机器</span><br><span class="line">vim /etc/selinux/config</span><br><span class="line"># 将SELINUX=enforcing改为SELINUX=disabled</span><br></pre></td></tr></table></figure>
+<p>关闭iptables</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>停止firewall</span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line"><span class="meta">#</span>禁止firewall开机启动</span><br><span class="line">systemctl disable firewalld.service</span><br></pre></td></tr></table></figure>
+<p>安装ambari</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ambari-server</span><br></pre></td></tr></table></figure>
+<p>配置初始化ambari</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ambari-server setup</span><br></pre></td></tr></table></figure>
+<p>配置安装的详细内容可以查看<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/set_up_the_ambari_server.html" target="_blank" rel="noopener">官方文档</a>，以下的回应安装提示差不多是官方文档的翻译。</p>
+<p>回应安装提示：</p>
+<ol>
+<li>如果您尚未暂时禁用SELinux，则可能会收到警告。接受默认值（<strong>y</strong>），然后继续。</li>
+<li>默认情况下，Ambari Server运行在<code>root</code>。<strong>(n)</strong>在<code>Customize user account for ambari-server daemon</code>提示符下接受默认值，继续<code>root</code>。如果要创建另一个用户来运行Ambari服务器，或者要分配以前创建的用户，请<strong>y</strong>在<code>Customize user account for ambari-server daemon</code>提示符处选择，然后提供用户名。</li>
+<li>如果您尚未暂时禁用<code>iptables</code>，则可能会收到警告。输入y继续。</li>
+<li>选择要下载的JDK版本。<ul>
+<li>输入1以下载Oracle JDK 1.8。默认情况下，Ambari Server安装程序会下载并安装Oracle JDK 1.8和随附的Java Cryptography Extension（JCE）策略文件</li>
+<li>输入2需要提供自己安装的jdk的java_home路径</li>
+</ul>
+</li>
+<li>出现提示时，请查看GPL许可协议。要明确启用Ambari下载和安装LZO数据压缩库，不明白LZO的作用可以直接<strong>y</strong>，反正多安装不是什么坏处</li>
+<li>选择<strong>n</strong>在 <code>Enter advanced database configuration</code>以使用Ambari的默认嵌入式PostgreSQL数据库。默认的PostgreSQL数据库名称是<code>ambari</code>。默认用户名和密码是<code>ambari/bigdata</code>。否则，要使用现有的PostgreSQL，MySQL / MariaDB或Oracle数据库与Ambari，请选择<strong>y</strong>。</li>
+</ol>
+<p>启动登陆ambari</p>
+<p>如果安装顺利，可以直接启动ambari</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ambari-server start</span><br></pre></td></tr></table></figure>
+<p>接着可以访问http://&lt;your.ambari.server&gt;:8080来登陆ambari,初始用户名和密码都是admin</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_1.png" alt="ambari_1"></p>
+<p>点击Launch Install Wizard开始集群配置</p>
+<h2 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h2><p>填写集群名字</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_2.png" alt="ambari_2"></p>
+<p>选择HDP的版本，在这一步由于搭建了本地源，所以使用本地源的URI</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_3.png" alt="ambari_3"></p>
+<p>填入集群的各个节点的主机名，不是IP,要保证/etc/hosts能正常解析到各个节点,可以保持一份正确的配置，所有节点都使用相同的hosts文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/hosts</span><br><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line"></span><br><span class="line">10.1.18.221 master.hdu.edu.cn amdnode8</span><br><span class="line">10.1.18.222 slave1.hdu.edu.cn node1</span><br><span class="line">10.1.18.223 slave2.hdu.edu.cn node2</span><br><span class="line">10.1.18.224 slave3.hdu.edu.cn node3</span><br><span class="line">10.1.18.225 slave4.hdu.edu.cn node4</span><br></pre></td></tr></table></figure>
+<p>因此主机名填写如下</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_4.png" alt="ambari_4"></p>
+<p>接着填好ambari所在主机的秘钥，进入下一步安装</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/ambari_5.png" alt="ambari_4"></p>
+<p>接着选择安装的组件，配置组件，配置参数基本按照默认走，除了填写几个用户名和密码，就不细讲了。</p>
+<p>建议：一开始最好不要安装大量组件，只把zookeeper,hdfs，yarn,mr2这些必要的组件安装，后期慢慢添加更多组件，如果一开始安装大量组件，需要一股脑解决大量问题，别问我怎么知道的。</p>
+<h2 id="安装过程中的错误"><a href="#安装过程中的错误" class="headerlink" title="安装过程中的错误"></a>安装过程中的错误</h2><ul>
+<li><p>安装Hive Client报错“Failed to download file from <a href="http://master.hdu.edu.cn:8080/resources/mysql-connector-java.jar" target="_blank" rel="noopener">http://master.hdu.edu.cn:8080/resources/mysql-connector-java.jar</a> due to HTTP error: HTTP Error 404: Not Found”</p>
+<p>解决方法：在master.hdu.edu.cn对应的节点下载关联好jdbc</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install mysql-connector-java*</span><br><span class="line">ls -al /usr/share/java/mysql-connector-java.jar</span><br><span class="line">cd /var/lib/ambari-server/resources/</span><br><span class="line">ln -s /usr/share/java/mysql-connector-java.jar mysql-connector-java.jar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>报错“ExecutionFailed: Execution of ‘ambari-python-wrap /usr/bin/hdp-select set xxx-client 3.1.0.0-78’ returned 1. symlink target /usr/hdp/current/xxx-client for tez already exists and it is not a symlink.”</p>
+<p>解决方法，把软连接建立上去：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /usr/hdp/current/xxx-client</span><br><span class="line">ln -s /usr/hdp/3.1.0.0-78/xxx /usr/hdp/current/xxx-client</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>按照过程中最好联网，虽然建立了HDP的本地源，但是有些还是通过yum从远程仓库获取，如mariadb-server等</p>
+</li>
+</ul>
+<p>按照过程中会有很多错误，基本是查看错误的日志，排除错误原因，如yum安装不上，可以采用手动安装；缺少文件，可以从其他成功安装的集群获取文件；文件权限不对，无法读取，手动设置好需要的权限等。</p>
 
       
     </div>
@@ -515,6 +607,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+            <a href="/tags/Ambari/" rel="tag"># Ambari</a>
+          
+        </div>
+      
 
       
       
@@ -524,8 +624,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/字符串编辑距离.html" rel="next" title="字符串编辑距离">
-                <i class="fa fa-chevron-left"></i> 字符串编辑距离
+              <a href="/Hadoop的搭建.html" rel="next" title="Hadoop的搭建">
+                <i class="fa fa-chevron-left"></i> Hadoop的搭建
               </a>
             
           </div>
@@ -533,10 +633,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/Hadoop的RPC分析.html" rel="prev" title="Hadoop的RPC分析">
-                Hadoop的RPC分析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -677,7 +773,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">16</span>
+                      
+                    
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -719,7 +817,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#按照环境"><span class="nav-text">按照环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地仓库"><span class="nav-text">本地仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Ambari"><span class="nav-text">安装Ambari</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群配置"><span class="nav-text">集群配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装过程中的错误"><span class="nav-text">安装过程中的错误</span></a></li></ol></div>
             
 
           </div>
