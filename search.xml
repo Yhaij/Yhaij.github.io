@@ -5,10 +5,10 @@
     <url>%2F%E5%85%B3%E4%BA%8E%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E6%83%B3%E6%B3%95.html</url>
     <content type="text"><![CDATA[前言动态规划是经常用到的算法，一般是通过递推，将一个复杂的问题分解为简单的最小问题求解，即存在着最优子结构。从求解子问题一步步推出原始问题的解。我将目前遇到的动态规划的问题按照开辟数组的维度分为一维和二维两类，背包问题不属于这类，因为背包问题相关的问题也是通过动态规划，但是比较复杂，单独放在外面。以上是我个人对于遇到的动态规范的分类，纯属个人想法，还有树形动态规划，后续遇到会加入进去。 一维这里的一维也可以理解为递推，即一个问题的求解一般根据其前一个子问题或前两子问题来的。 比如Fibonacci数列，LeetCode 70等。 以Fibonacci数列为例，$f(n) = f(n-1) + f(n-2)$,其中$f(1) = f(2) = 1$。这种问题一般通过递归自顶向下或者循环自底向上求解。如求Fibonacci数列的$f(n)$ 12345678910111213141516171819202122// 自顶向下，递归public long fibonacci(int n)&#123; if(n &lt;= 2)&#123; return 1; &#125;else&#123; return fibonacci(n-1) + fibonacci(n-2) &#125;&#125;// 自底向上public long fibonacci(int n)&#123; if(n &lt;= 2)&#123; return 1; &#125; long p = 1;q = 1; for(int i = 3;i &lt;= n;i++)&#123; int tmp = q; q = p + q; p = tmp; &#125; return q;&#125; 当然在递归时存在着重复计算，如$f(n-1)$需要计算0到n-2的所有子结果，而$f(n-2)$需要计算0到n-3的所有子结果，存在着0到n-3的子问题的重复计算。因此可以使用备忘录的形式，即开辟数组记录已经计算过的$f(n)$值。 12345678910111213141516171819// 修改之后的递归public long fibonacci(int n)&#123; long[] memo = new long[n+1]; for(int i = 0;i &lt;= n;i++)&#123; memo[i] = -1; &#125; return recursion(n);&#125;public long recursion(int n)&#123; if(n &lt;= 2)&#123; return 1; &#125; if(memo[n] != -1)&#123; return memo[n]; &#125; memo[n] = fibonacci(n-1) + fibonacci(n-2); return memo[n];&#125; 二维二维下的动态规划，也可以看做是区间dp，一般是将问题从最小的区间开始，不断扩展，从已知的几个相邻区间推到出现区间的值。 数组从上向下或从左往右扩展如字符串的编辑距离的求解,一开始得到各自空字符串的编辑距离（二维数组第0行和第0列），接着根据当前比较两个字符的情况和已知的区间（数组中的左元素、上元素和左上元素）得到当前区间的值。 如简单正则表达式匹配,假设$d[i][j]​$表示p字符模式从0到i的子串和s字符串从0到j的子串的匹配结果。 如果$p[i]=’*’ \&amp;\&amp;p[i-1] = s[j]$，$d[i][j]=d[i-1][j]||d[i-2][j] || d[i][j-1]$ 如果$p[i]=’*’ \&amp;\&amp;p[i-1]\neq s[j]​$，$d[i][j]=d[i-1][j]||d[i-2][j]​$ 如果$p[i]=’.’ ||p[i] ==s[j]$，$d[i][j]=true$ 不满足上述情况的，$d[i][j]=false$ 实现代码如下：s 123456789101112131415161718192021222324252627282930313233343536373839public boolean isMatch(String s, String p) &#123; boolean[][] isMacth = new boolean[p.length()+1][s.length()+1]; isMacth[0][0] = true; for(int i = 1; i &lt;= s.length();i++)&#123; isMacth[0][i] = false; &#125; for(int i = 1; i &lt;= p.length();i++)&#123; if(p.charAt(i-1) == '*')&#123; isMacth[i][0] = isMacth[i-2][0]; &#125;else &#123; isMacth[i][0] = false; &#125; &#125; for(int i = 1;i &lt;= p.length();i++)&#123; if(p.charAt(i-1) == '*')&#123; for(int j = 1; j &lt;= s.length();j++)&#123; if(compare(p.charAt(i-2), s.charAt(j-1)))&#123; isMacth[i][j] = isMacth[i][j-1]; &#125; isMacth[i][j] = isMacth[i-1][j] || isMacth[i-2][j] || isMacth[i][j]; &#125; &#125;else &#123; for(int j = 1; j &lt;= s.length(); j++)&#123; if (compare(p.charAt(i-1), s.charAt(j-1)))&#123; isMacth[i][j] = isMacth[i-1][j-1]; &#125;else &#123; isMacth[i][j] = false; &#125; &#125; &#125; &#125; return isMacth[p.length()][s.length()];&#125;public boolean compare(char a, char b)&#123; if(a == '.')&#123; return true; &#125;else return a == b;&#125; 数组从中间向左上或右下扩展如最长回文子串,假设$p[i][j]$表示字符串第$i$个字符到第$j$个字符之间的子串是否为回文子串，其递推公式为：$$p[i][j] = \begin{cases}true \quad(s[i] == s[j]\quad and\quad p[i+1][j-1] = true)\quad or \quad j-i == 1\\false \quad other\\\end{cases}$$如果$p[i][j]$为真且长度大于当前最大长度则记录长度和起始位置。 1234567891011121314151617181920212223242526public String longestPalindrome(String s) &#123; if(s == null || s.length() &lt;= 1)&#123; return s; &#125; boolean[][] p = new boolean[s.length()][s.length()]; p[s.length()-1][s.length()-1] = true; int l = 0, start = 0; for(int i = s.length()-2;i &gt;= 0;i--)&#123; p[i][i] = true; for(int j = i+1; j &lt; s.length();j++)&#123; if(s.charAt(i) == s.charAt(j))&#123; if((j-i) == 1)&#123; p[i][j] = true; &#125; if(p[i+1][j-1])&#123; p[i][j] = true; &#125; &#125; if(p[i][j] &amp;&amp; j - i &gt; l)&#123; l = j - i; start = i; &#125; &#125; &#125; return s.substring(start, start+l+1);&#125; 背包问题0-1背包问题及其相关的问题可以看大牛的《背包九讲》，里面写的很详细。]]></content>
       <categories>
-        <category>Java</category>
+        <category>算法</category>
       </categories>
       <tags>
-        <tag>背包问题</tag>
+        <tag>动态规划</tag>
       </tags>
   </entry>
   <entry>
@@ -180,8 +180,8 @@
         <category>算法</category>
       </categories>
       <tags>
-        <tag>字符串</tag>
         <tag>动态规划</tag>
+        <tag>字符串</tag>
       </tags>
   </entry>
 </search>
