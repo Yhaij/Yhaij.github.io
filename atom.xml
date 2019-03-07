@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-03-07T01:16:54.000Z</updated>
+  <updated>2019-03-07T01:55:05.800Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,44 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于动态规划的想法</title>
+    <link href="https://www.seanjiang.cn/%E5%85%B3%E4%BA%8E%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E6%83%B3%E6%B3%95.html"/>
+    <id>https://www.seanjiang.cn/关于动态规划的想法.html</id>
+    <published>2019-03-07T01:38:01.000Z</published>
+    <updated>2019-03-07T01:55:05.800Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;动态规划是经常用到的算法，一般是通过递推，将一个复杂的问题分解为简单的最小问题求解，即存在着最优子结构。从求解子问题一步步推出原始问题的解。我将目前遇到的动态规划的问题按照开辟数组的维度分为一维和二维两类，背包问题不属于这类，因为背包问题相关的问题也是通过动态规划，但是比较复杂，单独放在外面。以上是我个人对于遇到的动态规范的分类，纯属个人想法，还有树形动态规划，后续遇到会加入进去。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://www.seanjiang.cn/categories/Java/"/>
+    
+    
+      <category term="背包问题" scheme="https://www.seanjiang.cn/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>读HashMap源码</title>
+    <link href="https://www.seanjiang.cn/%E8%AF%BBHashMap%E6%BA%90%E7%A0%81.html"/>
+    <id>https://www.seanjiang.cn/读HashMap源码.html</id>
+    <published>2019-03-07T01:35:42.000Z</published>
+    <updated>2019-03-07T01:55:19.900Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;HashMap是Java中常用的数据结构，是集合类中的重要存在，其中包含了散列表、链表和红黑树。散列表解决冲突的方法是链地址法，即将散列值相同的元素存放在一个链表中。当冲突过多，链表过长会造成查找效率降低，因此java8中在HashMap中引入红黑树进行优化，当某个散列值下的链表长度过长（长度大于8），会将其转变为红黑树存储，优化查询。涉及到红黑树的操作不会再这里细讲&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://www.seanjiang.cn/categories/Java/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>ambaria安装HDP</title>
@@ -32,9 +70,9 @@
       <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
     
     
-      <category term="Hadoop" scheme="https://www.seanjiang.cn/tags/Hadoop/"/>
-    
       <category term="Ambari" scheme="https://www.seanjiang.cn/tags/Ambari/"/>
+    
+      <category term="Hadoop" scheme="https://www.seanjiang.cn/tags/Hadoop/"/>
     
   </entry>
   
