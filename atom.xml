@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-03-07T13:56:41.340Z</updated>
+  <updated>2019-03-15T14:11:33.410Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>java同步器-AQS</title>
+    <link href="https://www.seanjiang.cn/java%E5%90%8C%E6%AD%A5%E5%99%A8-AQS.html"/>
+    <id>https://www.seanjiang.cn/java同步器-AQS.html</id>
+    <published>2019-03-15T14:09:29.000Z</published>
+    <updated>2019-03-15T14:11:33.410Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;AQS，即AbstractQueuedSynchronized，抽象的队列式同步器，它是一个用于构建锁和同步器的基础框架，java中很多锁和同步器的实现都依赖AQS,比如ReentrantLock、 ReadWriteLock、Semaphore、CountDownLatch等。然而这些锁都没有直接来继承AQS,而是定义了一个Sync类去继承AQS.因为锁面向的是使用用户,而同步器面向的则是线程控制,那么在锁的实现中聚合同步器而不是直接继承AQS就可以很好的隔离二者所关注的事情.&lt;/p&gt;
+&lt;p&gt;AQS的实现是基于CLH队列，CLH队列的提出是用于自旋锁，但在AQS中，JUC并发包的作者（Doug Lea）将其用于阻塞锁。在了解AQS之前首先来看看CAS和CLH队列。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://www.seanjiang.cn/categories/Java/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>红黑树-转载整理</title>
+    <link href="https://www.seanjiang.cn/%E7%BA%A2%E9%BB%91%E6%A0%91-%E8%BD%AC%E8%BD%BD%E6%95%B4%E7%90%86.html"/>
+    <id>https://www.seanjiang.cn/红黑树-转载整理.html</id>
+    <published>2019-03-15T14:08:09.000Z</published>
+    <updated>2019-03-15T14:11:42.800Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;红黑树是一种自平衡二叉查找树，其每个结点都有一个存储位来表示结点的颜色，RED或者BLACK。红黑树的实现结构复杂，但是在红黑树上的查找，增加和删除的时间复杂度都为O(logn)，因此红黑树的应用广泛，如Java的HashMap当冲突链表长度大于8时，转为红黑树；TreeMap使用红黑树结构等。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="红黑树" scheme="https://www.seanjiang.cn/tags/%E7%BA%A2%E9%BB%91%E6%A0%91/"/>
+    
+  </entry>
   
   <entry>
     <title>mapreduce过程-shuffle和sort</title>

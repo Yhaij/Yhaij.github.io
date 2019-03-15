@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言红黑树是一种自平衡二叉查找树，其每个结点都有一个存储位来表示结点的颜色，RED或者BLACK。红黑树的实现结构复杂，但是在红黑树上的查找，增加和删除的时间复杂度都为O(logn)，因此红黑树的应用广泛，如Java的HashMap当冲突链表长度大于8时，转为红黑树；TreeMap使用红黑树结构等。">
+<meta name="keywords" content="红黑树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红黑树-转载整理">
+<meta property="og:url" content="https://www.seanjiang.cn/红黑树-转载整理.html">
+<meta property="og:site_name" content="Sean&#39;s Blog">
+<meta property="og:description" content="前言红黑树是一种自平衡二叉查找树，其每个结点都有一个存储位来表示结点的颜色，RED或者BLACK。红黑树的实现结构复杂，但是在红黑树上的查找，增加和删除的时间复杂度都为O(logn)，因此红黑树的应用广泛，如Java的HashMap当冲突链表长度大于8时，转为红黑树；TreeMap使用红黑树结构等。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Red-black_tree_example.svg.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Tree_rotation.png">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-insert1.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-balck-insert2.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-insert3.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete1.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete2.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete3.jpg">
+<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete4.jpg">
+<meta property="og:updated_time" content="2019-03-15T14:11:42.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="红黑树-转载整理">
+<meta name="twitter:description" content="前言红黑树是一种自平衡二叉查找树，其每个结点都有一个存储位来表示结点的颜色，RED或者BLACK。红黑树的实现结构复杂，但是在红黑树上的查找，增加和删除的时间复杂度都为O(logn)，因此红黑树的应用广泛，如Java的HashMap当冲突链表长度大于8时，转为红黑树；TreeMap使用红黑树结构等。">
+<meta name="twitter:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Red-black_tree_example.svg.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sean's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://www.seanjiang.cn/红黑树-转载整理.html">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>红黑树-转载整理 | Sean's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sean's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/红黑树-转载整理.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">红黑树-转载整理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-15 22:08:09 / 修改时间：22:11:42" itemprop="dateCreated datePublished" datetime="2019-03-15T22:08:09+08:00">2019-03-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/红黑树-转载整理.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/红黑树-转载整理.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/红黑树-转载整理.html" class="leancloud_visitors" data-flag-title="红黑树-转载整理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>红黑树是一种自平衡二叉查找树，其每个结点都有一个存储位来表示结点的颜色，RED或者BLACK。红黑树的实现结构复杂，但是在红黑树上的查找，增加和删除的时间复杂度都为O(logn)，因此红黑树的应用广泛，如Java的HashMap当冲突链表长度大于8时，转为红黑树；TreeMap使用红黑树结构等。</p>
+<a id="more"></a>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>在了解红黑树之前要先明白二叉查找树，因为红黑树是特殊的二叉查找树，有着二叉查找树特点。</p>
+<h3 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h3><p>二叉查找树上的结点必须按二叉查找树的性质进行存储：</p>
+<ul>
+<li>如果一个结点拥有左子树，则左子树上的所有结点的值都小于该结点的值</li>
+<li>如果一个结点拥有右子树，则右子树上的所有结点的值都大于该结点的值</li>
+</ul>
+<h3 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h3><ul>
+<li>T：树的头结点</li>
+<li>每个结点都有key、left、right、p属性，分别代表结点值、左结点、右结点和父结点</li>
+</ul>
+<h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><p>由于二叉查找树的性质，如果查找值比结点的值小进入左子树查找，否则进入右子树查找</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">TREE-SEARCH(T, k)</span><br><span class="line">	x = T</span><br><span class="line">	<span class="keyword">while</span> x != NULL</span><br><span class="line">		<span class="keyword">if</span> x.key == k</span><br><span class="line">			<span class="keyword">return</span> x</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> x.key &gt; k</span><br><span class="line">			x = x.right</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			x = x.left</span><br><span class="line">	<span class="keyword">return</span> NULL</span><br></pre></td></tr></table></figure>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>同样是根据二叉查找树的性质，找到合适的叶子节点插入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TREE-INSERT(T, z)</span><br><span class="line">	x = T</span><br><span class="line">	<span class="comment">// y记录要插入的父节点</span></span><br><span class="line">	<span class="keyword">while</span> x != NULL</span><br><span class="line">		y = x</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> x.key &gt; z.key</span><br><span class="line">			x = x.right</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			x = x.left</span><br><span class="line">	z.p = y</span><br><span class="line">	<span class="keyword">if</span> y == NULL</span><br><span class="line">		T = z</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> z.key &gt; y.key</span><br><span class="line">		y.right = z</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		y.left = z</span><br></pre></td></tr></table></figure>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>删除分三种情况：</p>
+<ul>
+<li>如果删除的节点是叶子节点，则直接删除</li>
+<li>如果删除的节点只有一个孩子节点，则将孩子节点代替删除的节点位置</li>
+<li>如果删除的节点有左右子树，则找到其前驱节点或者后继节点代替删除节点位置，前驱节点或者后继节点必定只有一个孩子节点，接着按照情况2删除前驱节点或者后继节点</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用y结点代替x结点</span></span><br><span class="line">REPLACE(T, x, y)</span><br><span class="line">	<span class="keyword">if</span> x.p == NULL</span><br><span class="line">		T = y</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> x.p.left == x</span><br><span class="line">		x.p.left = y</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		x.p.right = y</span><br><span class="line">	<span class="keyword">if</span> y != NULL</span><br><span class="line">		y.p = x.p</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line"><span class="comment">// 删除z结点</span></span><br><span class="line">TREE-DELETE(T, z)</span><br><span class="line">	<span class="keyword">if</span> z.right == NULL</span><br><span class="line">		REPLACE(T, z, z.left)</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> z.left == NULL</span><br><span class="line">		REPLACE(T, z, z.right)</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        y = z.right</span><br><span class="line">        <span class="keyword">while</span> y.left != NULL</span><br><span class="line">        	y = y.left</span><br><span class="line">        REPLACE(T, y, y.right)</span><br><span class="line">        y.right = z.right</span><br><span class="line">        y.right.p = y</span><br><span class="line">        REPLACE(T, z, y)</span><br><span class="line">        y.left = z.left</span><br><span class="line">        y.left.p = y</span><br></pre></td></tr></table></figure>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>讲完二叉查找树终于轮到我们在主角，红黑树。由于当二叉查找树插入的节点值按照顺序，则形成的二叉树和链表相同，无法提高查找的效率，因此引入红黑树。</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Red-black_tree_example.svg.png" alt="red_black_tree"></p>
+<h3 id="性质-1"><a href="#性质-1" class="headerlink" title="性质"></a>性质</h3><ul>
+<li><p>每个结点都有颜色属性，不是黑色就是红色</p>
+</li>
+<li><p>根节点是黑色的</p>
+</li>
+<li><p>每一个叶结点都是黑色的，叶结点值为NULL，不存储值</p>
+</li>
+<li>如果一个结点是红色的，则它的两个叶子结点都是黑色的</li>
+<li>对于每一个结点，从该结点到其所有后代叶结点的路径经过的黑结点数目相同（黑结点的数目称为该节点的黑高）</li>
+</ul>
+<p>一棵有n个结点的红黑树的高度至多为2lg(n+1)</p>
+<h3 id="表示-1"><a href="#表示-1" class="headerlink" title="表示"></a>表示</h3><p>在二叉查找树的基础上每个结点加入color属性，表示结点的颜色。</p>
+<p>认为所有的叶子结点都为NULL，就是指向空指针，颜色可以人为认为为黑色。</p>
+<h3 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h3><p>子树的左旋转和右旋转是红黑树中的常用操作,分为左旋转和右旋转，如下图</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Tree_rotation.png" alt="Tree_rolation"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 左旋转</span></span><br><span class="line">LEFT-ROTAET(T, p)</span><br><span class="line">    y = p.right</span><br><span class="line">    p.right = y.left</span><br><span class="line">    <span class="keyword">if</span> y.left != NULL</span><br><span class="line">    	y.left.p = p</span><br><span class="line">    y.p = p.p</span><br><span class="line">    <span class="keyword">if</span> p.p == NULL</span><br><span class="line">    	T = y</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> p == p.p.left</span><br><span class="line">    	p.p.left = y</span><br><span class="line">    <span class="keyword">else</span> p.p.right = y</span><br><span class="line">    y.left = p</span><br><span class="line">    p.p = y</span><br></pre></td></tr></table></figure>
+<p>右旋的代码和左旋的差不多，就是left换成right</p>
+<h3 id="查找-1"><a href="#查找-1" class="headerlink" title="查找"></a>查找</h3><p>红黑树的查找和二叉查找树的查找过程是一样的，由于一棵有n个结点的红黑树的高度至多为2lg(n+1)，所以查找的时间复杂度为Olg(n)</p>
+<h3 id="插入-1"><a href="#插入-1" class="headerlink" title="插入"></a>插入</h3><p>红黑是的插入而二叉查找树的插入是一样的，但是插入到红黑树的节点的颜色赋值为RED，这样有可能会破坏红黑树的性质，需要进行后续的修复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TREE-INSERT(T, z)</span><br><span class="line">z.color = RED</span><br><span class="line">RB-INSERT-FIXUP(T, z)</span><br></pre></td></tr></table></figure>
+<h4 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h4><p>之所以需要修复是因为将插入的节点颜色变为红色，可能会违反红黑树的性质，需要修复的情况只会出现在插入的点是根节点或者插入节点的父节点是红色，违反了红黑树的第二条和第四条性质。如果插入的节点父节点是黑色，不会违反任何性质。</p>
+<p>插入修复分四种情况：</p>
+<ul>
+<li>情况1：如果插入为根节点</li>
+<li>情况2：如果当前结点的父结点是红色且祖父结点的另一个子结点（叔叔结点）是红色</li>
+<li>情况3：当前节点的父节点是红色,叔叔节点是黑色，当前节点是其父节点的右子</li>
+<li>情况4：当前节点的父节点是红色,叔叔节点是黑色，当前节点是其父节点的左子</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">RB-INSERT-FIXUP(T, z)</span><br><span class="line">    <span class="keyword">while</span> z.p.color == RED</span><br><span class="line">        <span class="keyword">if</span> z.p == z.p.p.left</span><br><span class="line">        	y = z.p.p.right						<span class="comment">//y始终指向其叔叔节点</span></span><br><span class="line">            <span class="keyword">if</span> y.color == RED</span><br><span class="line">                z.p.color = BLACK               <span class="comment">//Case 2</span></span><br><span class="line">                y.color = BLACK                 <span class="comment">//Case 2</span></span><br><span class="line">                z.p.p.color = RED               <span class="comment">//Case 2</span></span><br><span class="line">                z = z.p.p                       <span class="comment">//Case 2</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> z == z.p.right</span><br><span class="line">                z = z.p                         <span class="comment">//Case 3</span></span><br><span class="line">                LEFT-ROTATE(T, z)               <span class="comment">//Case 3</span></span><br><span class="line">            z.p.color = BLACK                   <span class="comment">//Case 4</span></span><br><span class="line">            z.p.p.color = RED                   <span class="comment">//Case 4</span></span><br><span class="line">            RIGHT-ROTATE(T, z.p.p)              <span class="comment">//Case 4</span></span><br><span class="line">        <span class="keyword">else</span> (same as then clause with <span class="string">"right"</span> and <span class="string">"left"</span> exchanged)</span><br><span class="line">        <span class="comment">// 如果当前节点的父节点是祖父节点的右节点，情况一样，调换left和right即可</span></span><br><span class="line">    T.root.color ← BLACK						<span class="comment">//Case1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>如果插入为根节点</p>
+<p>直接将其颜色改为黑色即可，代码的最后一句</p>
+</li>
+<li><p>如果当前结点的父结点是红色且祖父结点的另一个子结点（叔叔结点）是红色</p>
+<p>当前节点的父节点和叔叔节点涂黑，祖父结点涂红，由于把祖父节点变红，这样又是一个将节点变红需要修复问题，所有针对祖父节点再次判断情况（z指向z的祖父重新进入循环）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> y.color == RED</span><br><span class="line">   z.p.color = BLACK               <span class="comment">//Case 2</span></span><br><span class="line">   y.color = BLACK                 <span class="comment">//Case 2</span></span><br><span class="line">   z.p.p.color = RED               <span class="comment">//Case 2</span></span><br><span class="line">   z = z.p.p                       <span class="comment">//Case 2</span></span><br></pre></td></tr></table></figure>
+<p>示意图插入节点4</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-insert1.jpg" alt="red-black-insert1"></p>
+</li>
+<li><p>当前节点的父节点是红色,叔叔节点是黑色，当前节点是其父节点的右子</p>
+<p>当前节点的父节点做为新的当前节点，以新当前节点为支点左旋。这样就会将该情况转为情况4</p>
+<p>示意图：再插入节点4后经过情况2的处理，转为对4的祖父进行修复，进入当前(情况3)修复，转为情况4</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-balck-insert2.jpg" alt="red-black-insert2"></p>
+</li>
+<li><p>当前节点的父节点是红色,叔叔节点是黑色，当前节点是其父节点的左子</p>
+<p>父节点变为黑色，祖父节点变为红色，在祖父节点为支点右旋</p>
+<p>示意图由情况三旋转转为当前情况后处理</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-insert3.jpg" alt="red-black-insert3"></p>
+</li>
+</ul>
+<h3 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h3><p>红黑树的删除和二叉查找树的删除几乎相同，不同的是需要处理颜色，当删除节点无左子树或右子树时，直接删除，而当删除节点有左子树和右子树时，需要将后继节点代替删除节点，同时颜色赋值为删除节点的颜色，后继节点直接删除，相当于删除的是后继节点。</p>
+<p>当删除的节点（当删除节点有左子树和右子树时，删除的是其后继节点）颜色是黑色时需要修复，因为删除黑色的节点必定会破坏性质5，除非树中只有一个根节点。</p>
+<h4 id="修复-1"><a href="#修复-1" class="headerlink" title="修复"></a>修复</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">RB-DELETE-FIXUP(T, x)</span><br><span class="line"><span class="keyword">while</span> x != T and x.color == BLACK  </span><br><span class="line">	<span class="keyword">if</span> x == x.p.eft </span><br><span class="line">    	w = x.p.right</span><br><span class="line">        	<span class="keyword">if</span> w.color == RED  </span><br><span class="line">            	color[w] = BLACK                      <span class="comment">//Case 1  </span></span><br><span class="line">            	x.p.color = RED                       <span class="comment">//Case 1  </span></span><br><span class="line">            	LEFT-ROTATE(T, x.p)                   <span class="comment">//Case 1  </span></span><br><span class="line">             	w = x.p.right                         <span class="comment">//Case 1  </span></span><br><span class="line">			<span class="keyword">if</span> w.left.color = BLACK and w.right.color = BLACK  </span><br><span class="line">            	w.color = RED                         <span class="comment">//Case 2  </span></span><br><span class="line">            	x = p[x]                              <span class="comment">//Case 2  </span></span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> w.right.color = BLACK  </span><br><span class="line">					w.left.color = BLACK          	  <span class="comment">//Case 3  </span></span><br><span class="line">					w.color = RED                     <span class="comment">//Case 3  </span></span><br><span class="line">					RIGHT-ROTATE(T, w)                <span class="comment">//Case 3  </span></span><br><span class="line">					w = right[p[x]]                   <span class="comment">//Case 3  </span></span><br><span class="line">				w.color = color[p[x]]                 <span class="comment">//Case 4  </span></span><br><span class="line">                x.p.color = BLACK                     <span class="comment">//Case 4  </span></span><br><span class="line">                w.right.color = BLACK                 <span class="comment">//Case 4  </span></span><br><span class="line">                LEFT-ROTATE(T, p[x])                  <span class="comment">//Case 4 </span></span><br><span class="line">                x = T                                 <span class="comment">//Case 4  </span></span><br><span class="line">       <span class="keyword">else</span> (same as then clause with <span class="string">"right"</span> and <span class="string">"left"</span> exchanged)  </span><br><span class="line">x.color = BLACK</span><br></pre></td></tr></table></figure>
+<p>“我们从被删节点后来顶替它的那个节点开始调整，并认为它有额外的一重黑色。这里额外一重黑色是什么意思呢，我们不是把红黑树的节点加上除红与黑的另一种颜色，这里只是一种假设，我们认为我们当前指向它，因此空有额外一种黑色，可以认为它的黑色是从它的父节点被删除后继承给它的，它现在可以容纳两种颜色，如果它原来是红色，那么现在是红+黑，如果原来是黑色，那么它现在的颜色是黑+黑。有了这重额外的黑色，原红黑树性质5就能保持不变。现在只要恢复其它性质就可以了，做法还是尽量向根移动和穷举所有可能性。”–saturnman。</p>
+<p>先解决两种简单的情况：</p>
+<ul>
+<li>当前节点颜色是红+黑，直接将该节点改为黑色</li>
+<li>当前节点颜色是黑+黑且是根节点， 那么就可以结束</li>
+</ul>
+<p>接下里重点解决下面三种情况：</p>
+<ul>
+<li><p>情况1：当前节点颜色是黑+黑且兄弟节点为红色(此时父节点和兄弟节点的子节点分为黑)</p>
+<p>(01) 将兄弟节点设为黑色。</p>
+<p>(02) 将父节点设为红色。</p>
+<p>(03) 对父节点进行左旋。</p>
+<p>(04) 左旋后，重新设置兄弟节点为新的当前节点。</p>
+<p>这样做可以将情况1转为情况2、3或4</p>
+<p>示意图：</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete1.jpg" alt="red-black-delete1"></p>
+</li>
+<li><p>情况2：当前节点颜色是黑+黑且兄弟是黑色且兄弟节点的两个子节点全为黑色</p>
+<p>(01) 将兄弟节点设为红色。</p>
+<p>(02) 设置父节点为新的当前节点</p>
+<p>示意图：</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete2.jpg" alt="red-black-delete2"></p>
+</li>
+<li><p>情况3：当前节点颜色是黑+黑，兄弟节点是黑色，兄弟的左子是红色，右子是黑色</p>
+<p>(01) 将兄弟节点的左孩子设为“黑色”。</p>
+<p>(02) 将兄弟节点设为“红色”。</p>
+<p>(03) 对兄弟节点进行右旋。</p>
+<p>(04) 右旋后，重新设置兄弟节点为新的当前节点。</p>
+<p>示意图：</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete3.jpg" alt="red-black-delete3"></p>
+</li>
+<li><p>情况4：当前节点颜色是黑+黑色，它的兄弟节点是黑色，但是兄弟节点的右子是红色，兄弟节点左子的颜色任意</p>
+<p>(01) 将父节点的颜色赋值给 兄弟节点。</p>
+<p>(02) 将父节点设为黑色。</p>
+<p>(03) 将兄弟节点的右子节点设为黑色。</p>
+<p>(04) 对父节点进行左旋。</p>
+<p>(05) 把根节点设置成新的当前节点，处理完毕</p>
+<p>示意图：</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/red-black-delete4.jpg" alt="red-black-delete4"></p>
+</li>
+</ul>
+<h2 id="红黑树的复杂度"><a href="#红黑树的复杂度" class="headerlink" title="红黑树的复杂度"></a>红黑树的复杂度</h2><p>一棵有n个结点的红黑树的高度至多为2lg(n+1)，因此查找的时间复杂度为O(lg n)</p>
+<p>红黑树在最坏情况下基本动态集合操作的时间复杂度是<em>O</em>(lg<em>n</em>)</p>
+<h3 id="红黑树与AVL树（平衡二叉树）"><a href="#红黑树与AVL树（平衡二叉树）" class="headerlink" title="红黑树与AVL树（平衡二叉树）"></a>红黑树与AVL树（平衡二叉树）</h3><p>AVL树是严格的平衡二叉树，必须满足左右子树的高度差不超过1，因此维持平衡的代价要高于红黑树，但是由于AVL树的平衡性好于二叉树，因此在查找方面要由于红黑树。</p>
+<p>因此如果插入删除不频繁，只是对查找要求较高，那么AVL是较优于红黑树的。</p>
+<p>如果插入删除较为频繁，红黑树维持平衡的代价要远小于AVL树，红黑树具有优势。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>《算法导论》</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91</a></p>
+<p><a href="https://my.oschina.net/edwardge/blog/1833893" target="_blank" rel="noopener">https://my.oschina.net/edwardge/blog/1833893</a></p>
+<p><a href="https://blog.csdn.net/v_july_v/article/details/6105630" target="_blank" rel="noopener">https://blog.csdn.net/v_july_v/article/details/6105630</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/红黑树/" rel="tag"># 红黑树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/mapreduce过程-shuffle和sort.html" rel="next" title="mapreduce过程-shuffle和sort">
+                <i class="fa fa-chevron-left"></i> mapreduce过程-shuffle和sort
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/java同步器-AQS.html" rel="prev" title="java同步器-AQS">
+                java同步器-AQS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">sean</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉查找树"><span class="nav-text">二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性质"><span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表示"><span class="nav-text">表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查找"><span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入"><span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除"><span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#红黑树"><span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性质-1"><span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表示-1"><span class="nav-text">表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转"><span class="nav-text">旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查找-1"><span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入-1"><span class="nav-text">插入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修复"><span class="nav-text">修复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除-1"><span class="nav-text">删除</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修复-1"><span class="nav-text">修复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#红黑树的复杂度"><span class="nav-text">红黑树的复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#红黑树与AVL树（平衡二叉树）"><span class="nav-text">红黑树与AVL树（平衡二叉树）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sean</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz',
+        appKey: 'no8wCVViVFjBve3FT8ogpaFg',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function ({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', `/classes/Counter/${counter.objectId}`, JSON.stringify({ time: { "__op":"Increment", "amount":1 } }))
+            
+            .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            })
+            
+            .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+            })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1}))
+                .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function () {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+      .fail(function ({ responseJSON }) {
+        console.log('LeanCloud Counter Error:' + responseJSON.code + " " + responseJSON.error);
+      });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + "jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz")
+        .done(function ({ api_server }) {
+          var Counter = function (method, url, data) {
+            return $.ajax({
+              method: method,
+              url: `https://${api_server}/1.1${url}`,
+              headers: {
+                'X-LC-Id': "jFcGIyAb6jtNaWYnsAcfrF51-gzGzoHsz",
+                'X-LC-Key': "no8wCVViVFjBve3FT8ogpaFg",
+                'Content-Type': 'application/json',
+              },
+              data: data,
+            });
+          };
+          
+          addCount(Counter);
+          
+        })
+    });
+  </script>
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
