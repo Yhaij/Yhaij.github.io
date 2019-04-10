@@ -108,27 +108,17 @@
 
 
 
-  <meta name="description" content="表空间InnoDB中数据都存放在一个空间中，就是表空间。在文件系统中就是idb文件，每个idb文件都是一个表空间。它们之间通过表空间id来区分，在默认情况下，InnoDB使用的是共享表空间，所有数据存放在一个共享表空间ibdata1中。共享表空间可以通过参数innodb_data_file_path进行配置。 可以同时配置多个文件组成一个共享表空间，如 1innodb_data_file_path">
-<meta name="keywords" content="数据页,聚簇索引">
+  <meta name="description" content="前言了解了java的队列式同步器AQS的基本实现，接下来可以看看java中频繁使用的可重入锁ReentrantLock。ReentrantLock是基于AQS实现的，内部类Sync继承了AQS，提供了公平锁和非公平锁。同synchronized相比，ReentrantLock是代码实现的锁，而synchronized是虚拟机上实现的锁，都是可重入的排他锁，即一个线程占有锁，其他线程必须等待锁的释放">
 <meta property="og:type" content="article">
-<meta property="og:title" content="InnoDB数据页结构及其与聚簇索引的关系">
-<meta property="og:url" content="https://www.seanjiang.cn/InnoDB数据页结构及其与聚簇索引的关系.html">
+<meta property="og:title" content="ReentrantLock">
+<meta property="og:url" content="https://www.seanjiang.cn/ReentrantLock.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
-<meta property="og:description" content="表空间InnoDB中数据都存放在一个空间中，就是表空间。在文件系统中就是idb文件，每个idb文件都是一个表空间。它们之间通过表空间id来区分，在默认情况下，InnoDB使用的是共享表空间，所有数据存放在一个共享表空间ibdata1中。共享表空间可以通过参数innodb_data_file_path进行配置。 可以同时配置多个文件组成一个共享表空间，如 1innodb_data_file_path">
+<meta property="og:description" content="前言了解了java的队列式同步器AQS的基本实现，接下来可以看看java中频繁使用的可重入锁ReentrantLock。ReentrantLock是基于AQS实现的，内部类Sync继承了AQS，提供了公平锁和非公平锁。同synchronized相比，ReentrantLock是代码实现的锁，而synchronized是虚拟机上实现的锁，都是可重入的排他锁，即一个线程占有锁，其他线程必须等待锁的释放">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/page_format.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/file_head.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/page_header.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/compact_format.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/compact_head.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Redundant_format.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/redundant_head.png">
-<meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/secondary_index.png">
-<meta property="og:updated_time" content="2018-12-24T04:39:30.000Z">
+<meta property="og:updated_time" content="2019-04-10T12:20:50.940Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="InnoDB数据页结构及其与聚簇索引的关系">
-<meta name="twitter:description" content="表空间InnoDB中数据都存放在一个空间中，就是表空间。在文件系统中就是idb文件，每个idb文件都是一个表空间。它们之间通过表空间id来区分，在默认情况下，InnoDB使用的是共享表空间，所有数据存放在一个共享表空间ibdata1中。共享表空间可以通过参数innodb_data_file_path进行配置。 可以同时配置多个文件组成一个共享表空间，如 1innodb_data_file_path">
-<meta name="twitter:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/page_format.png">
+<meta name="twitter:title" content="ReentrantLock">
+<meta name="twitter:description" content="前言了解了java的队列式同步器AQS的基本实现，接下来可以看看java中频繁使用的可重入锁ReentrantLock。ReentrantLock是基于AQS实现的，内部类Sync继承了AQS，提供了公平锁和非公平锁。同synchronized相比，ReentrantLock是代码实现的锁，而synchronized是虚拟机上实现的锁，都是可重入的排他锁，即一个线程占有锁，其他线程必须等待锁的释放">
 
 
 
@@ -137,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="https://www.seanjiang.cn/InnoDB数据页结构及其与聚簇索引的关系.html">
+  <link rel="canonical" href="https://www.seanjiang.cn/ReentrantLock.html">
 
 
 
@@ -147,7 +137,7 @@
   };
 </script>
 
-  <title>InnoDB数据页结构及其与聚簇索引的关系 | Sean's Blog</title>
+  <title>ReentrantLock | Sean's Blog</title>
   
 
 
@@ -392,7 +382,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/InnoDB数据页结构及其与聚簇索引的关系.html">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/ReentrantLock.html">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sean">
@@ -409,7 +399,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">InnoDB数据页结构及其与聚簇索引的关系
+          <h1 class="post-title" itemprop="name headline">ReentrantLock
               
             
           </h1>
@@ -434,7 +424,7 @@
                 
               
 
-              <time title="创建时间：2018-12-24 12:35:57 / 修改时间：12:39:30" itemprop="dateCreated datePublished" datetime="2018-12-24T12:35:57+08:00">2018-12-24</time>
+              <time title="创建时间：2019-04-10 20:09:25 / 修改时间：20:20:50" itemprop="dateCreated datePublished" datetime="2019-04-10T20:09:25+08:00">2019-04-10</time>
             
 
             
@@ -445,24 +435,6 @@
           </span>
 
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a></span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -471,8 +443,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/InnoDB数据页结构及其与聚簇索引的关系.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/InnoDB数据页结构及其与聚簇索引的关系.html" itemprop="commentCount"></span>
+                <a href="/ReentrantLock.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/ReentrantLock.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -480,7 +452,7 @@
 
           
           
-             <span id="/InnoDB数据页结构及其与聚簇索引的关系.html" class="leancloud_visitors" data-flag-title="InnoDB数据页结构及其与聚簇索引的关系">
+             <span id="/ReentrantLock.html" class="leancloud_visitors" data-flag-title="ReentrantLock">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -512,65 +484,26 @@
       
 
       
-        <h2 id="表空间"><a href="#表空间" class="headerlink" title="表空间"></a>表空间</h2><p>InnoDB中数据都存放在一个空间中，就是表空间。在文件系统中就是idb文件，每个idb文件都是一个表空间。它们之间通过表空间id来区分，在默认情况下，InnoDB使用的是共享表空间，所有数据存放在一个共享表空间ibdata1中。共享表空间可以通过参数<code>innodb_data_file_path</code>进行配置。</p>
-<p>可以同时配置多个文件组成一个共享表空间，如</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">innodb_data_file_path=/data/ibdata1:2000M;/data/ibdata2:2000M:autoextend</span><br></pre></td></tr></table></figure>
-<p>这里配置了/data/ibdata1和/data/ibdata2两个文件组成表空间，如果两个文件在不同磁盘上，能降低各个磁盘的负载，可以提高数据库的性能。同时，两个文件名后跟了存储大小，表示文件的最大存放空间，而autoextend表示/data/ibdata2若用完了2000M，文件可以自动增长。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>了解了java的队列式同步器AQS的基本实现，接下来可以看看java中频繁使用的可重入锁ReentrantLock。ReentrantLock是基于AQS实现的，内部类Sync继承了AQS，提供了公平锁和非公平锁。同synchronized相比，ReentrantLock是代码实现的锁，而synchronized是虚拟机上实现的锁，都是可重入的排他锁，即一个线程占有锁，其他线程必须等待锁的释放，同一个线程多次进入已将占有的锁，在效率方面，之前是ReentrantLock 效率更高，但后来java对synchronized进行了优化，效率目前来说差不多，ReentrantLock使用起来比synchronized更加灵活，synchronized使用来说更加方便，不用担心加锁释放锁的代码。</p>
 <a id="more"></a>
-<p>实际上，除了共享表空间还有独立表空间，将参数<code>innodb_file_pre_table</code>设为ON可以开启独立表空空间。在独立表空间中，对于每张表内的数据都单独放在一个表空间中，但是每个表空间只会对应表的数据、索引和插入缓冲Bitmap页，其余数据，例如回滚日志，事务信息，二次缓存等还是存放在共享表空间。</p>
-<p>表空间由段(segment)、区(extent)、页(page)组合。</p>
-<h2 id="数据页"><a href="#数据页" class="headerlink" title="数据页"></a>数据页</h2><p>页是InnoDB存储引擎管理数据库的最小磁盘单位。默认一个页的大小是16K,InnoDB 1.0.x后可以通过参数KEY_BLOCK_SIZE设置默认页大小为2K,4K,8K，InnoDB 1.2.x新增参数innodb_page_size可以设置默认页大小为4K,8K。</p>
-<p>数据页由File Header、Page Header、Infimun和Supremum Records、User Records、Free Space、Page Directory、File Trailer组合。其中File Header、Page Header和File Trailer的大小是固定的，分别占用38、56、8个字节，记录数据页的信息。而Infimun、Supremum Records、User Records、Free Space、Page Directory存储的信息和实际的行数据有关，因此大小是动态的。</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/page_format.png" alt="Page"></p>
-<h3 id="File-Header"><a href="#File-Header" class="headerlink" title="File Header"></a>File Header</h3><p>File Header固定38个字节，用来记录页的头信息。</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/file_head.png" alt="File Head"></p>
-<p>File Header中的FIL_PAGE_PREV和FIL_PAGE_NEXT分别是记录了上一页和下一页在表空间中的位置，因此页与页之间是通过链表的数据结构连接再一起，而且是一个双向链表。</p>
-<h3 id="Page-Header"><a href="#Page-Header" class="headerlink" title="Page Header"></a>Page Header</h3><p>Page Header接着File Header之后，固定56字节，记录数据页的状态信息。</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/page_header.png" alt="Page Header"></p>
-<h3 id="Infimun和Supremum-Records"><a href="#Infimun和Supremum-Records" class="headerlink" title="Infimun和Supremum Records"></a>Infimun和Supremum Records</h3><p>Infimun和Supremum Records是虚拟的两个行记录，用来限定实际数据行的边界。Infimun是比页中任何主键值都小的值，而Supremum是比任何主键值都要大的值。这两值在页被创建时就被建立，不会被删除。</p>
-<h3 id="User-Records"><a href="#User-Records" class="headerlink" title="User Records"></a>User Records</h3><p>存储实际行记录的内容。数据库中一行数据对应文件中的一行记录格式。目前InnoDB只要有两种行记录格式：Compact和Redundant，Compacts是mysql 5.1之后的默认行记录格式，Redundant是为了兼容之前的版本而保留。接下来分别介绍这两种行记录格式。</p>
-<h4 id="Compact行记录格式"><a href="#Compact行记录格式" class="headerlink" title="Compact行记录格式"></a>Compact行记录格式</h4><p>Compact行记录格式能够高效的存储行记录，一页中存放的行数据越大，性能就越高。Compact的存储格式如下图：</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/compact_format.png" alt="Compact format"></p>
-<p>变成字段长度列表记录了行记录中变长字段(varchar)的长度，其按照列的顺序逆序放置，一个变长字段的长度最大不会超过2个字节，因为varchar类型的最大长度为65535，正好是2的16次方，因此最多两个字节就能记录下该字段的长度。如果该列的长度小于255字节，则用1个字节表示，如果大于255字节，则用2个字节表示。</p>
-<p>例如，创建一张表z,包括三个变长字段，一个固定长度字段，则其对对应的变长字段列表如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE test(</span><br><span class="line">t1 VARCHAR(10),</span><br><span class="line">t2 VARCHAR(10),</span><br><span class="line">t3 CHAR(10),</span><br><span class="line">t4 VARCHAR(10)</span><br><span class="line">ENGINE=INNODB CHARSERT=LATIN1 ROW_FORMAT=COMPAT);</span><br><span class="line"></span><br><span class="line">-- 第一行</span><br><span class="line">INSERT INTO test VALUES(&apos;a&apos;, &apos;bb&apos;, &apos;ccc&apos;, &apos;dddd&apos;);</span><br><span class="line">-- 第二行</span><br><span class="line">INSERT INTO test VALUES(&apos;e&apos;, NULL, &apos;ff&apos;, &apos;gggg&apos;);</span><br><span class="line">-- 第三行</span><br><span class="line">INSERT INTO test VALUES(&apos;e&apos;, NULL, NULL, &apos;gggg&apos;);</span><br></pre></td></tr></table></figure>
-<p>第一行对应的变长字段长度列表为<code>04 03 01</code>(dddd,ccc,a)，第二行<code>04 02 01</code>(gggg,ff,e)，第三行为<code>04 01</code>(gggg,e)，因为t3为固定长度字段，所以不会记录其长度，对已NULL的字段也是不会记录，比如第三行的t2字段。</p>
-<p>NULL标志占1个字节，表示该行记录有无NULL值，有则为1，无为0。字段中的NULL值实际上不记录在compact格式中，所以NULL数据实际上除了占有NULL标志位以外不占用任何存储空间。</p>
-<p>记录头信息固定占5个字节，详细表示记录的信息如下图</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/compact_head.png" alt=""></p>
-<p>从行记录头中的next_record可以看出行与行之间同样是链表的方式存储，因此一页之间的行与行其实不需要按照顺序存储，实际上行存储顺序可能是无序的，但是通过链表将其按照主键顺序串连在一起。n_owned是和下文要讲的Page Dirextory有关，帮助在页中查找行记录。</p>
-<p>接下来分别是事务ID和回滚指针，分别占用6字节和7字节，如果InnoDB表没有指定主键也没有非空唯一索引，则会在事务ID前增加一个自动创建的6字节的主键ID。</p>
-<p>最后存储的就是各个字段上实际数据。</p>
-<h4 id="Redundant行记录格式"><a href="#Redundant行记录格式" class="headerlink" title="Redundant行记录格式"></a>Redundant行记录格式</h4><p>Redundant行记录格式是为了兼容之前版本的页格式，其存储格式如下：</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/Redundant_format.png" alt="Redundant format"></p>
-<p>地段长度偏移列表表示各个字段（包括主键ID,事务ID,回滚指针，列数据，不包括记录头信息）距离记录头信息开始的偏移量。</p>
-<p>redundant记录头信息占6个字节，格式如下：</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/redundant_head.png" alt="redundant head"></p>
-<p>接下来的信息格式和Compact行记录格式一样，除了对NULL值的处理，在Compact中除了NULL标志外实际上是不存储NULL值，但是redundant中NULL是记录其内容，具体内容就是用00填充其固定字段长度，对于变长字段则同样不占用任何存储空间，即不记录变长字段NULL值。</p>
-<h3 id="Free-Space"><a href="#Free-Space" class="headerlink" title="Free Space"></a>Free Space</h3><p>Free Space指的是页中的空闲空间，同样是链表的数据结构，当一行被删除之后，该空间就会被加入Free Space当中。</p>
-<h3 id="Page-Directory"><a href="#Page-Directory" class="headerlink" title="Page Directory"></a>Page Directory</h3><p>Page Directory也叫页目录，存放的是记录在页中的相对位置。这些记录指针被称为slots（槽）。InnoDB的页中的并不是为每一条记录存放在槽，InnoDB实际上采用的是稀疏目录，即一个槽中可能存放的是多个记录。slots中的记录是按照主键索引值逆序排放的，每个槽占两个字节，通过槽中的指针找到对应行记录的位置，行记录头中的n_owned记录了该记录拥有的记录数，即槽中存放的记录数。</p>
-<p>slots中的记录是按照主键索引值逆序排放的，通过槽使用二分查找可以快速的找到页中相应行记录的位置。例如，页中记录的主键值有<code>{g, i, c, k, e, f, a, h, b, j, l, d}</code>，假设一个槽存放4条记录，则按照主键排序的逆序，槽中的记录可能是<code>{a, e, i}</code></p>
-<p>通过槽使用二分查找查找到的结果只是一个粗略的结果，需要获得准确的结果，还需通过next_record顺着链表最多查看n_owned条记录是否符合要求。</p>
-<p>实际上通过InnoDB查找记录的顺序是首先通过B+书找到相应的页，接着将页加载到内存中，在页中通过Page Directory利用二分查找找到粗略的位置，最后通过链表找到记录。只不过在内存中二分查找的过程很快，一般忽略这部分的查找时间。</p>
-<h3 id="File-Trailer"><a href="#File-Trailer" class="headerlink" title="File Trailer"></a>File Trailer</h3><p>File Trailer是为了检测页是否完整的写入磁盘而设置的，其中包含checksum值，通过相应的checknum函数进行比较，检测页的完整性。</p>
-<h2 id="InnoDB数据页与索引"><a href="#InnoDB数据页与索引" class="headerlink" title="InnoDB数据页与索引"></a>InnoDB数据页与索引</h2><h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p>InnoDB针对每张表的主键都会构造一颗B+树，即聚簇索引（Clusterd Index），所以InnoDB的每张表都有聚簇索引，就是其在主键上创建的索引。索引结构同B+树的数据结构相同，但与辅助索引不同的是其叶子节点存放的是所有的数据，即聚簇索引叶子节点实际上就是数据页，叶子节点之间通过双向链表有序的连接在一起，即上文每个数据页的File Header都有FIL_PAGE_PREV和FIL_PAGE_NEXT记录上一页和下一页的位置。聚簇索引在物理存储上并不是按照顺序的存放，而是通过其双向链表和数据页中的行记录格式的行链表实现了逻辑上的顺序存放，沿着链表查看是顺序存放的。</p>
-<p>因此通过聚簇索引查找实际上分三种查找方式：</p>
+<h2 id="公平锁和非公平锁"><a href="#公平锁和非公平锁" class="headerlink" title="公平锁和非公平锁"></a>公平锁和非公平锁</h2><p>先来看看公平锁和非公平锁的不同：</p>
 <ul>
-<li>根据B+树查找到对应的数据页</li>
-<li>在数据页中根据Page Directory的稀疏目录找到粗略的行记录位置</li>
-<li>z最后根据next_record在链表上顺序查找</li>
+<li>公平锁：顾名思义，就是完全按照线程请求锁的先后顺序来获得锁，先到先得，如果等待锁的队列中还要其他线程，必须排在其后面等待</li>
+<li>非公平锁：在线程请求锁的同时，该锁被释放，则该线程会直接获得锁，无需经过等待队列，如果请求锁的同时锁被占有，则和公平锁一致，需要在等待队列中排队等候</li>
 </ul>
-<h3 id="辅助索引"><a href="#辅助索引" class="headerlink" title="辅助索引"></a>辅助索引</h3><p>在InnoDB表的非主键字段上建立的B+树索引也称为辅助索引（Secondary Index）。辅助索引结构同样是B+树的结构，但是其叶子节点存放的不是数据页，而是索引的键值加上主键值。</p>
-<p>通过辅助索引可以查找到相应的主键值，接着利用主键值在聚簇索引上找到实际数据，即我们通过辅助索引查找实际上是通过两颗B+树查找。</p>
-<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/secondary_index.png" alt="辅助索引和聚簇索引的关系"></p>
-<h3 id="与非聚簇索引的比较"><a href="#与非聚簇索引的比较" class="headerlink" title="与非聚簇索引的比较"></a>与非聚簇索引的比较</h3><p>例如MYISAM存储引擎使用的是非聚簇索引，不同于聚簇索引的是其叶子节点存放的是数据存放的地址。其主索引和辅助索引除了键值不同外并没有什么区别，叶子节点都是使用指针指向真正的数据地址。</p>
-<ul>
-<li><p>对于离散的查找，聚簇索引要比非聚簇索引慢一些，因为聚簇索引要走两颗B+树的I/O。</p>
-</li>
-<li><p>在数据的更新上，特别是更新影响到物理地址的变化，聚簇索引要比非聚簇索引，因为非聚簇索引需要改变所有索引上相应叶子节点的物理地址，而聚簇索引叶子节点直接存放数据，辅助索引存放的是主键值，无需改变。</p>
-</li>
-<li>对于排序和范围查找，聚簇索引将数据按照逻辑顺序排列，能够通过一行记录的位置快速找到其相应的周围的记录，明显比非聚簇索引好。</li>
-</ul>
+<p>公平锁和非公平锁各有各的应用场景，因为一个线程从唤醒到持有锁执行任务之间有着严重的延迟，假设一个线程A释放锁，需要唤醒其后继节点的线程B，B在从唤醒到持有锁有一段时间的延迟中，有一个线程C尝试获取锁，如果采用非公平锁，这时C会获得锁，如果C执行时间很短，在B唤醒前已经执行完毕，则B唤醒则直接获得锁执行，但如果C执行时间很长，在B唤醒前无法执行完毕，则B唤醒后获取锁失败会被重新挂起。</p>
+<p>因此对于那些线程持有锁的时间较长的情况，采用公平锁更合适，减少不必要的唤醒（在非公平锁下唤醒得不到锁被重新挂起）带来的消耗，对于线程持有锁时间较短的情况，非公平锁可以提高效率，即不影响等待队列中线程运行，同时能运行完插队的线程。</p>
+<p>总的来说，公平锁保证线程请求资源上的绝对公平，但是频繁的切换上下文，非公平锁可以降低上下文切换，降低性能开销，有更大的吞吐量，但是非公平锁有可能造成饥饿现象。</p>
+<h2 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h2><p>ReentrantLock是可重入独占锁，其内部是通过调用内部类Sync的方法实现对锁的控制，Sync是继承了AQS类，其使用了模板方法，子类只需实现tryAcquire和tryRelease方法返回获取锁和释放锁是否成功的boolean即可，如果获取锁线程会被挂起在同步队列中（在AQS中实现）因此ReentrantLock中Sync只需考虑判断是否获取锁成功以及判断是否释放锁，同时可以通过setExclusiveOwnerThread设置线程为独占锁的线程（传入null代表无线程占有锁，一般在释放锁时调用），AQS类的详细解读可以看<a href="https://www.seanjiang.cn/java%E5%90%8C%E6%AD%A5%E5%99%A8-AQS.html#more">java同步器-AQS</a>。</p>
+<h3 id="非公平锁的实现"><a href="#非公平锁的实现" class="headerlink" title="非公平锁的实现"></a>非公平锁的实现</h3><p>ReentrantLock考虑到系统的性能，默认是采用非公平锁，从其构造函数可以看出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 默认为非公平锁</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync = <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">(<span class="keyword">boolean</span> fair)</span> </span>&#123;</span><br><span class="line">    sync = fair ? <span class="keyword">new</span> FairSync() : <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NonfairSync就是ReentrantLock中非公平锁的实现，其继承了Sync。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">5179523762034025860L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果抢占锁成功，直接</span></span><br><span class="line">            <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">                setExclusiveOwnerThread(current);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果是同一个线程，则可重入，state加1</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">            <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">            <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">            setState(nextc);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">7316153563782823691L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 当前没有线程持有锁，当前线程可直接尝试获取锁</span></span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">            setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            acquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nonfairTryAcquire(acquires);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到非公平锁lock()过程是，首先通过CAS设置State,如果设置成功，则说明获取锁成功，失败再调用acquire，调用tryAcquire方法，tryAcquire方法使用父类Sync的nonfairTryAcquire，这也是一次尝试通过CAS设置State,如果设置成功，则说明获取锁成功。可以看到如果有线程占有锁，会进行判断当前线程和占有锁的线程是否为同一个线程，如果是，state加1，获取锁成功，这里实现了可重入的功能。而state是判断能否释放锁的依据。</p>
+<h3 id="公平锁的实现"><a href="#公平锁的实现" class="headerlink" title="公平锁的实现"></a>公平锁的实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">3000897897090466540L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        acquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 即使当前没有线程持有锁，如果等待队列中还有元素，也无法获得锁，需要等待</span></span><br><span class="line">            <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">                compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">                setExclusiveOwnerThread(current);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果请求锁的线程是当前持有锁的线程，则返回true,实现可重入锁，state加1</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">            <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">            <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">            setState(nextc);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实公平锁和非公平锁的实现几乎类似，公平锁的lock方法直接调用acquire方法，没有非公平锁的抢占的操作，acquire最终会调用tryAcquire尝试获取锁（AQS中的实现），公平锁的tryAcquire方法在获取线程时比非公平锁多了一个hasQueuedPredecessors判断，判断等待队列中是否有前驱节点，如果有则不去尝试获取锁，直接判断获取失败。</p>
+<h3 id="释放锁"><a href="#释放锁" class="headerlink" title="释放锁"></a>释放锁</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">// c==0代表重入已经全部释放</span></span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">// 设置持有独占锁的信息为空</span></span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>释放锁的过程是相同的，由于是可重入锁，state记录线程重入的次数，所以每当线程释放一次锁state减1，直到state的为0时代表线程重入锁已经全部释放，这时候可以释放锁给其他线程。由于tryRelease调用会减少state，所以是不允许未获得锁的线程释放锁的（即没有调用lock方法就调用release方法），否则会造成出错。</p>
 
       
     </div>
@@ -592,14 +525,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/数据页/" rel="tag"># 数据页</a>
-          
-            <a href="/tags/聚簇索引/" rel="tag"># 聚簇索引</a>
-          
-        </div>
-      
 
       
       
@@ -609,8 +534,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/布隆过滤器-Bloom-Filter.html" rel="next" title="布隆过滤器-Bloom Filter">
-                <i class="fa fa-chevron-left"></i> 布隆过滤器-Bloom Filter
+              <a href="/java同步器-AQS.html" rel="next" title="java同步器-AQS">
+                <i class="fa fa-chevron-left"></i> java同步器-AQS
               </a>
             
           </div>
@@ -619,8 +544,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/Hadoop的搭建.html" rel="prev" title="Hadoop的搭建">
-                Hadoop的搭建 <i class="fa fa-chevron-right"></i>
+              <a href="/java线程池.html" rel="prev" title="java线程池">
+                java线程池 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -810,7 +735,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#表空间"><span class="nav-text">表空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据页"><span class="nav-text">数据页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#File-Header"><span class="nav-text">File Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Page-Header"><span class="nav-text">Page Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Infimun和Supremum-Records"><span class="nav-text">Infimun和Supremum Records</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#User-Records"><span class="nav-text">User Records</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Compact行记录格式"><span class="nav-text">Compact行记录格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redundant行记录格式"><span class="nav-text">Redundant行记录格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Free-Space"><span class="nav-text">Free Space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Page-Directory"><span class="nav-text">Page Directory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#File-Trailer"><span class="nav-text">File Trailer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB数据页与索引"><span class="nav-text">InnoDB数据页与索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#聚簇索引"><span class="nav-text">聚簇索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#辅助索引"><span class="nav-text">辅助索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与非聚簇索引的比较"><span class="nav-text">与非聚簇索引的比较</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公平锁和非公平锁"><span class="nav-text">公平锁和非公平锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantLock"><span class="nav-text">ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#非公平锁的实现"><span class="nav-text">非公平锁的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公平锁的实现"><span class="nav-text">公平锁的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放锁"><span class="nav-text">释放锁</span></a></li></ol></li></ol></div>
             
 
           </div>

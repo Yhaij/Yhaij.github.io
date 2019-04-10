@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-03-15T14:11:33.410Z</updated>
+  <updated>2019-04-10T12:09:11.000Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,47 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>java线程池</title>
+    <link href="https://www.seanjiang.cn/java%E7%BA%BF%E7%A8%8B%E6%B1%A0.html"/>
+    <id>https://www.seanjiang.cn/java线程池.html</id>
+    <published>2019-04-10T13:05:02.000Z</published>
+    <updated>2019-04-10T12:09:11.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;线程池是多并发编程中经常用到，了解是线程池的使用和原理是java程序员的必修课。编写多线程的程序推荐使用线程池而不是自己创建线程，因为线程池中的线程可以复用，复用线程可以降低线程创建和销毁的资源消耗，线程池帮助管理、调度、监控线程，可以防止无限制的创建线程，消耗完系统资源&lt;/p&gt;
+&lt;h2 id=&quot;简单使用&quot;&gt;&lt;a href=&quot;#简单使用&quot; class=&quot;headerlink&quot; title=&quot;简单使用&quot;&gt;&lt;/a&gt;简单使用&lt;/h2&gt;&lt;p&gt;几种常用的线程池：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;newCachedThreadPool，可缓存的线程池，线程池容量几乎为无限(Interger. MAX_VALUE)，当一个新线程任务提交，如果线程池没有空闲的线程，则创建一个新线程执行，否则使用空闲线程。&lt;/li&gt;
+&lt;li&gt;newFixedThreadPool，定长的线程池，线程池维持定长的线程，即使没有任务运行也不会关闭线程，当新任务提交，线程池中线程都在执行，则将任务放入阻塞队列中排队等待空闲线程运行。&lt;/li&gt;
+&lt;li&gt;newScheduledThreadPool，定长的线程池，支持定时及周期性执行任务，newFixedThreadPool的特殊化，线程池容量为1&lt;/li&gt;
+&lt;li&gt;newSingleThreadExecutor，线程池只有一个线程，所有任务按照提交的先后顺序执行&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://www.seanjiang.cn/categories/Java/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>ReentrantLock</title>
+    <link href="https://www.seanjiang.cn/ReentrantLock.html"/>
+    <id>https://www.seanjiang.cn/ReentrantLock.html</id>
+    <published>2019-04-10T12:09:25.000Z</published>
+    <updated>2019-04-10T12:20:50.940Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;了解了java的队列式同步器AQS的基本实现，接下来可以看看java中频繁使用的可重入锁ReentrantLock。ReentrantLock是基于AQS实现的，内部类Sync继承了AQS，提供了公平锁和非公平锁。同synchronized相比，ReentrantLock是代码实现的锁，而synchronized是虚拟机上实现的锁，都是可重入的排他锁，即一个线程占有锁，其他线程必须等待锁的释放，同一个线程多次进入已将占有的锁，在效率方面，之前是ReentrantLock 效率更高，但后来java对synchronized进行了优化，效率目前来说差不多，ReentrantLock使用起来比synchronized更加灵活，synchronized使用来说更加方便，不用担心加锁释放锁的代码。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>java同步器-AQS</title>
@@ -392,54 +433,6 @@
     
     
       <category term="背包问题" scheme="https://www.seanjiang.cn/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hadoop的RPC分析</title>
-    <link href="https://www.seanjiang.cn/Hadoop%E7%9A%84RPC%E5%88%86%E6%9E%90.html"/>
-    <id>https://www.seanjiang.cn/Hadoop的RPC分析.html</id>
-    <published>2018-11-20T12:57:52.000Z</published>
-    <updated>2019-02-25T14:11:42.000Z</updated>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;RPC&quot;&gt;&lt;a href=&quot;#RPC&quot; class=&quot;headerlink&quot; title=&quot;RPC&quot;&gt;&lt;/a&gt;RPC&lt;/h3&gt;&lt;p&gt;RPC就是远程过程调用,具体什么是RPC，看一个例子就会明白。&lt;br&gt;比如客户端有一个RPC协议类Protocol。&lt;/p&gt;
-&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;interfce Protocol&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a, &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;但是客户端没有其实现的具体类，该类在服务端&lt;br&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Class ProtocolImpl implenets Protocol&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a, &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b)&lt;/span&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a + b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;则客户端需要调用ProtocolImpl的add方法，需要将调用的方法及其参数等信息发送给服务端，服务端解析信息，调用ProtocolImpl的add方法，将结果在传输给客户端，而RPC的目的就是使客户端仿佛在调用自身的方法来得到该方法的结果。&lt;br&gt;在这其中，Protocol就是一个RPC的协议，这个协议其实就是一个接口类，接口中的方法就是对外提供的远程调用方法。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
-    
-    
-      <category term="Hadoop" scheme="https://www.seanjiang.cn/tags/Hadoop/"/>
-    
-      <category term="RPC" scheme="https://www.seanjiang.cn/tags/RPC/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>字符串编辑距离</title>
-    <link href="https://www.seanjiang.cn/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB.html"/>
-    <id>https://www.seanjiang.cn/字符串编辑距离.html</id>
-    <published>2018-11-19T16:15:16.000Z</published>
-    <updated>2018-11-20T15:19:40.000Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;编辑距离（Edit Distance），这里指的是Levenshtein距离，也就是字符串S1通过插入、修改、删除三种操作最少能变换成字符串S2的次数。接下来介绍利用动态规划来求解字符串的编辑距离。&lt;/p&gt;
-&lt;p&gt;定义：$s_1$和$s_2$表示两字符串，$dist(i, j)$表示字符串$s_1$的前$i$个字符串和$s_2$的前$j$个字符串的编辑距离，$s_1(i)$和$s_2(j)$分别表示$s1$的第$i$个字符和$s2$的第$j$字符。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.seanjiang.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="动态规划" scheme="https://www.seanjiang.cn/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
-    
-      <category term="字符串" scheme="https://www.seanjiang.cn/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
     
   </entry>
   
