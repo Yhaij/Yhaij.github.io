@@ -118,7 +118,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log.png">
 <meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log2.png">
-<meta property="og:updated_time" content="2019-07-29T09:27:02.191Z">
+<meta property="og:updated_time" content="2019-07-29T09:31:14.428Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式一致性协议介绍">
 <meta name="twitter:description" content="一致性分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。但是分布式存储存在一个问题，如何保证相同时刻存储的数据是一样的，这就是一致性。它是构建具有容错性的分布式系统的基础，一致性保证每个结点存储的数据是一致的，这样即使部分结点宕机也能取得正确的副本数据。目前的一致性一致性协议通常基于replicated state machines，各个节点从一个相同初始化state出发，经过同样的">
@@ -428,7 +428,7 @@
                 
               
 
-              <time title="创建时间：2019-07-29 17:25:05 / 修改时间：17:27:02" itemprop="dateCreated datePublished" datetime="2019-07-29T17:25:05+08:00">2019-07-29</time>
+              <time title="创建时间：2019-07-29 17:25:05 / 修改时间：17:31:14" itemprop="dateCreated datePublished" datetime="2019-07-29T17:25:05+08:00">2019-07-29</time>
             
 
             
@@ -507,6 +507,7 @@
 
       
         <h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。但是分布式存储存在一个问题，如何保证相同时刻存储的数据是一样的，这就是一致性。它是构建具有容错性的分布式系统的基础，一致性保证每个结点存储的数据是一致的，这样即使部分结点宕机也能取得正确的副本数据。目前的一致性一致性协议通常基于replicated state machines，各个节点从一个相同初始化state出发，经过同样的操作序列(log)，最后到达相同的state</p>
+<a id="more"></a>
 <h2 id="二阶段提交"><a href="#二阶段提交" class="headerlink" title="二阶段提交"></a>二阶段提交</h2><p>转载自：<a href="http://book.51cto.com/art/201309/410608.htm" target="_blank" rel="noopener">两阶段提交协议</a></p>
 <p>两段式提交分为两个阶段：</p>
 <p>阶段1：请求阶段（Prepare Phase）。在请求阶段，协调者通知事务参与者准备提交或者取消事务，然后进入表决过程。在表决过程中，参与者将告知协调者自己的决策：同意（事务参与者本地执行成功）或者取消（事务参与者本地执行失败）</p>
