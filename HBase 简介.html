@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Sean&#39;s Blog">
 <meta property="og:description" content="数据模型在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。 hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-28T14:50:00.000Z">
+<meta property="og:updated_time" content="2019-05-25T03:13:31.650Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HBase 简介">
 <meta name="twitter:description" content="数据模型在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。 hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column">
@@ -425,12 +425,24 @@
                 
               
 
-              <time title="创建时间：2018-11-28 22:33:25 / 修改时间：22:50:00" itemprop="dateCreated datePublished" datetime="2018-11-28T22:33:25+08:00">2018-11-28</time>
+              <time title="创建时间：2018-11-28 22:33:25" itemprop="dateCreated datePublished" datetime="2018-11-28T22:33:25+08:00">2018-11-28</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-25 11:13:31" itemprop="dateModified" datetime="2019-05-25T11:13:31+08:00">2019-05-25</time>
               
             
           </span>
@@ -691,6 +703,44 @@
 <p>写的简单操作hbase表的类 <a href="https://github.com/Yhaij/HadoopLearn/tree/master/src/main/java/com/hbase/learn" target="_blank" rel="noopener">https://github.com/Yhaij/HadoopLearn/tree/master/src/main/java/com/hbase/learn</a></p>
 <h2 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h2><p>HBase提供行锁，但是在0.95版本之后客户端无法显示的得到和使用行锁，该API已经移除，只在服务端有行锁的应用。在客户端只能使用checkAndPut,checkAndDelete等行原子操作</p>
 <p><a href="https://issues.apache.org/jira/browse/HBASE-7315" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/HBASE-7315</a></p>
+<h2 id="rowkey的设计原则和热点问题"><a href="#rowkey的设计原则和热点问题" class="headerlink" title="rowkey的设计原则和热点问题"></a>rowkey的设计原则和热点问题</h2><ul>
+<li><p>长度原则，最短越好，最大不能超过64K。太长的影响有两点，一是极大影响了HFile的存储效率。二是缓存memstore不能得到有效利用，缓存不能存放太多的信息，造成检索效率的降低。</p>
+</li>
+<li><p>唯一原则：保证rowkey的唯一性</p>
+</li>
+<li><p>尽量保证经常一起用的rowkey存储在同一个region上，有助于提升检索效率。但要避免热点问题。</p>
+</li>
+</ul>
+<p>热点问题：即有的region存储大量的行记录，而有些只有少数，这是大量rowkey前缀相同，排序紧紧挨着一起造成</p>
+<p>解决方法：</p>
+<ul>
+<li>加盐：在rowkey前面加一个冗余信息，这样可以把数据分散到不同的region中<ul>
+<li>优点：可以有效的防止rowkey集中分配到一个或多个region中。有效避免了热点问题</li>
+<li>缺点：无形中增加了rowkey的长度；范围检索得不到有效使用。</li>
+</ul>
+</li>
+<li>字段交换，提升权重：如果rowkey中含有几个信息字段，可以调整信息字段的顺序。<ul>
+<li>缺点：对于单个信息字段，或者无论怎么调整都会遇到region热点的rowkey是解决不了的</li>
+</ul>
+</li>
+<li>随机键：把rowkey进行hash化，在分配到不同的服务器上。和加盐的方式相似；</li>
+</ul>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>如何找到数据的Region Server : 通过zookeeper找到.META.的Region Server，cache到客户端，接着在对应的Region Server中找到.META.,同时cache下来，在.META.表中找到对应的数据的RS.</p>
+<p>HBase写逻辑：先找到要写入的RS，先写入到HLog，在写入到MemStore</p>
+<p>HBase读逻辑：先找到记录的RS和Region，先顺序遍历MemStore查看是否有该条记录，没有再在HFile中通过布隆过滤器判断是否在文件中，有则在其中查找(根据索引来查找，是多层的，相当于一棵树，多层原因是可以各层加载进内存，不需要加载整个索引)</p>
+<p>MemStore刷盘触发时机：</p>
+<ul>
+<li>全局内存控制：当所有memstore占整个heap的最大比例（默认40%）的时候，会触发刷盘的操作，当刷盘时memstore小于整个heap的某个比例时（默认35%），停止。减少刷盘对业务带来的影响，实现平滑系统负载的目的。</li>
+<li>MemStore达到上限：当MemStore的大小达到hbase.hregion.memstore.flush.size大小的时候会触发刷盘，默认128M大小</li>
+<li><p>RegionServer的Hlog数量达到上限：前面说到Hlog为了保证Hbase数据的一致性，那么如果Hlog太多的话，会导致故障恢复的时间太长，因此Hbase会对Hlog的最大个数做限制。当达到Hlog的最大个数的时候，会强制刷盘。这个参数是hase.regionserver.max.logs，默认是32个。</p>
+</li>
+<li><p>手动触发：可以通过hbase shell或者java api手工触发flush的操作。</p>
+</li>
+<li>关闭RegionServer触发：在正常关闭RegionServer会触发刷盘的操作，全部数据刷盘后就不需要再使用Hlog恢复数据。</li>
+<li>Region使用HLOG恢复完数据后触发：当RegionServer出现故障的时候，其上面的Region会迁移到其他正常的RegionServer上，在恢复完Region的数据后，会触发刷盘，当刷盘完成后才会提供给业务访问。</li>
+</ul>
+<p>MemStore会按照排序好的结果刷盘进storefile，当storefile过大会触发Compaction， Compaction分为两类：MinorCompaction 和 MajorCompaction。MinorCompaction将小的，相邻的storefile合并，MajorCompaction将所有的storefile合成一个storefile。</p>
+<p>为什么要Compaction：因为Hadoop不擅长处理小文件，文件越大性能越好。</p>
 
       
     </div>
@@ -812,7 +862,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -886,7 +936,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -928,7 +982,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际存储"><span class="nav-text">实际存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储的数据类型"><span class="nav-text">存储的数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间"><span class="nav-text">命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命名空间管理"><span class="nav-text">命名空间管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义的名称空间"><span class="nav-text">预定义的名称空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hbase-shell的基本命令（持续更新）"><span class="nav-text">Hbase shell的基本命令（持续更新）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-的API-持续更新"><span class="nav-text">HBase 的API(持续更新)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行锁"><span class="nav-text">行锁</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际存储"><span class="nav-text">实际存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储的数据类型"><span class="nav-text">存储的数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间"><span class="nav-text">命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命名空间管理"><span class="nav-text">命名空间管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义的名称空间"><span class="nav-text">预定义的名称空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hbase-shell的基本命令（持续更新）"><span class="nav-text">Hbase shell的基本命令（持续更新）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-的API-持续更新"><span class="nav-text">HBase 的API(持续更新)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行锁"><span class="nav-text">行锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rowkey的设计原则和热点问题"><span class="nav-text">rowkey的设计原则和热点问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-text">原理</span></a></li></ol></div>
             
 
           </div>

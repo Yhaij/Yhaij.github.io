@@ -379,6 +379,274 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/分布式一致性协议介绍.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/分布式一致性协议介绍.html" class="post-title-link" itemprop="https://www.seanjiang.cn/index.html">分布式一致性协议介绍</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-29 17:25:05 / 修改时间：17:27:02" itemprop="dateCreated datePublished" datetime="2019-07-29T17:25:05+08:00">2019-07-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/分布式一致性协议介绍.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/分布式一致性协议介绍.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/分布式一致性协议介绍.html" class="leancloud_visitors" data-flag-title="分布式一致性协议介绍">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。但是分布式存储存在一个问题，如何保证相同时刻存储的数据是一样的，这就是一致性。它是构建具有容错性的分布式系统的基础，一致性保证每个结点存储的数据是一致的，这样即使部分结点宕机也能取得正确的副本数据。目前的一致性一致性协议通常基于replicated state machines，各个节点从一个相同初始化state出发，经过同样的操作序列(log)，最后到达相同的state</p>
+<h2 id="二阶段提交"><a href="#二阶段提交" class="headerlink" title="二阶段提交"></a>二阶段提交</h2><p>转载自：<a href="http://book.51cto.com/art/201309/410608.htm" target="_blank" rel="noopener">两阶段提交协议</a></p>
+<p>两段式提交分为两个阶段：</p>
+<p>阶段1：请求阶段（Prepare Phase）。在请求阶段，协调者通知事务参与者准备提交或者取消事务，然后进入表决过程。在表决过程中，参与者将告知协调者自己的决策：同意（事务参与者本地执行成功）或者取消（事务参与者本地执行失败）</p>
+<p>阶段2：提交阶段（Commit Phase）。在提交阶段，协调者将基于第一个阶段的投票结果进行决策：提交或者取消。当且仅当所有的参与者同意提交事务协调者才通知所有的参与者提交事务，否则协调者通知所有的参与者取消事务。参与者在接收到协调者发来的消息后将执行相应的操作</p>
+<p>两段式提交协议是阻塞协议，执行过程中需要锁住其他更新，节点在阶段1之后需要阻塞直到阶段2完成，浪费大量资源，并且不能容错，比如在阶段1之后阶段2之前，leader发生故障，则其余节点会永远进入阻塞状态</p>
+<h2 id="Raft协议"><a href="#Raft协议" class="headerlink" title="Raft协议"></a>Raft协议</h2><p>转载自：<a href="https://github.com/maemual/raft-zh_cn/blob/master/raft-zh_cn.md" target="_blank" rel="noopener">Raft协议论文的中文扩展版</a>和<a href="https://zhuanlan.zhihu.com/p/27207160" target="_blank" rel="noopener">Raft协议详解</a></p>
+<p>Raft协议主要分三方面：Leader的选举，Log的复制和集群成员变化。Raft协议保证节点的日志一样，并且按照相同的顺序执行，日志根据增加的先后会维持一个nextIndex，各个节点可以比较LogIndex来比较日志的新旧</p>
+<h3 id="Leader的选举"><a href="#Leader的选举" class="headerlink" title="Leader的选举"></a>Leader的选举</h3><p>Raft 通过选举一个leader，然后给予他全部的管理复制日志的责任来实现一致性。领导人从客户端接收日志条目，把日志条目复制到其他follower，并且当保证安全性的时候（当日志被一半以上follower执行）告诉其他的follower应用日志条目到他们的状态机中。拥有一个leader大大简化了对复制日志的管理。例如，leader可以决定新的日志条目需要放在日志中的什么位置而不需要和其他服务器商议，并且数据都从leader流向follower。一个leader可以宕机，可以和其他follower失去连接，这时一个新的leader会被选举出来。</p>
+<p>每一个leader正常运行期间都会维持一个term，每当进行一次leader选举，term就会增加1</p>
+<p>leader会定时向follower发送心跳包，一旦一个follower长时间没有接受到leader的心跳，就会认为leader失去连接，需要选举一个新leader，此时这个follower会将term加1开始选举投票，此时该follower会变为一个candidate并给自己投一票，同时发送RequestVoteRPC消息给其他follower</p>
+<p>follower会根据该消息比较自身的term和LogIndex来决定是否投票给candidate：</p>
+<ul>
+<li>如果term不小于自身的term</li>
+<li>如果candidate日志不比自身日志旧，则投票给他</li>
+<li>如果接受到多个candidate的同个term的消息，按照先来先服务原则，一个term只会投一次</li>
+</ul>
+<p>candidate收到follower的消息会有以下三种情况：</p>
+<ul>
+<li>如果一半以上的服务器同意，则转态变为leader，并且发送心跳包PRC（包含term）给所有服务器。当一个服务器接受到心跳包，发现其中的term比自身的大时，并且如果当前state为leader或者candidate时，将自己的状态切成follower。如果比自身小时，则拒绝这个RPC</li>
+<li>如果收到另一个candidate的消息，并且其term比自身的大，则状态变为follower</li>
+<li>没有选出leader。比如各个节点都为candidate，将票投给自己，则candidate会有一个投票超时时间（election timeout）从150ms-300ms之间随机取，超时之后term增加重新选举</li>
+</ul>
+<h3 id="Log的复制"><a href="#Log的复制" class="headerlink" title="Log的复制"></a>Log的复制</h3><p>通常leader会接受客户端的请求，每个请求包含一条需要被replicated state machines执行的命令。leader会把它作为一个log entry append到日志中，然后给follower发AppendEntriesRPC请求。当Leader确定一个log entry被safely replicated了（大多数副本已经将该命令写入日志当中），就apply这条log entry到状态机中然后返回结果给客户端。如果某个Follower宕机了或者运行的很慢，或者网络丢包了，则会一直给这个Follower发AppendEntriesRPC直到日志一致。</p>
+<p>当一条日志是commited时，leader才可以将它应用到状态机中。Raft保证一条commited的log entry已经持久化了并且会被所有的节点执行。</p>
+<p>但是leader在刚刚被选举出来之时，可能会存在各个服务器之间日志不统一，需要一个机制将follower统一成leader的日志。新选举出的leader和follower的日志可能会存在如下不同</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log.png" alt="rdf_log"></p>
+<p>新的leader可能会比follower多出log(a ~ b)，也可能会少(c ~ d)，也可能既多有少(e~f)。</p>
+<p>因此，需要有一种机制来让leader和follower对log达成一致，leader会为每个follower维护一个nextIndex，表示leader给各个follower发送的下一条log entry在log中的index，初始化为leader的最后一条log entry的下一个位置。leader给follower发送AppendEntriesRPC消息，带着(term_id, (nextIndex-1))， term_id即(nextIndex-1)这个槽位的log entry的term_id，follower接收到AppendEntriesRPC后，会从自己的log中找是不是存在这样的log entry，如果不存在，就给leader回复拒绝消息，然后leader则将nextIndex减1，再重复，直到AppendEntriesRPC消息被接收。</p>
+<p>以leader和b为例：</p>
+<p>初始化，nextIndex为11，leader给b发送AppendEntriesRPC(6,10)，b在自己log的10号槽位中没有找到term_id为6的log entry。则给leader回应一个拒绝消息。接着，leader将nextIndex减一，变成10，然后给b发送AppendEntriesRPC(6, 9)，b在自己log的9号槽位中同样没有找到term_id为6的log entry。循环下去，直到leader发送了AppendEntriesRPC(4,4)，b在自己log的槽位4中找到了term_id为4的log entry。接收了消息。随后，leader就可以从槽位5开始给b推送日志了。</p>
+<p>不过这个以上的机制需要不够完善，无法解决如下问题</p>
+<p><img src="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log2.png" alt="raft_log2"></p>
+<ol>
+<li>在 (a) 中，S1 是leader，部分follower复制了索引位置2的日志条目</li>
+<li>在 (b) 中，S1 崩溃了，然后 S5 在任term3 里通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处</li>
+<li>然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，开始复制日志。在这时，来自term 2 的那条日志已经被复制到了集群中的大多数机器上，由于超过一半的节点已经同步了索引位置 2 的日志，因此该日志被commit到状态机中</li>
+<li>接着S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志，即覆盖了已经commit到状态机中的日志</li>
+</ol>
+<p>为了防止上述的错误，导致节点维持的日志和转态机中提交的不同，增加了一个限制，只允许leader提交包含当前term的日志，这样(c)中S1索引位置 2 的日志即使被大多数follower同步也无法commit到状态机中，因为当期的term为4，必须S1在term4的日志才会被commit(同时term4之前的日志也会被commit)，如(e)的情况，此时即使S1再下线，重新选主时S5不可能成为Leader，因为它没有包含大多数节点已经拥有的索引位置4的日志</p>
+<h3 id="集群成员变化"><a href="#集群成员变化" class="headerlink" title="集群成员变化"></a>集群成员变化</h3><p>集群的拓扑结构发生变化会影响一致性，Raft通过如下过程改变集群的变化。假设在Raft中，老集群配置用Cold表示，新集群配置用Cnew表示，整个集群拓扑变化的流程如下：</p>
+<ol>
+<li>当集群成员配置改变时，leader收到人工发出的重配置命令从Cold切成Cnew；</li>
+<li>Leader副本在本地生成一个新的log entry，其内容是Cold $\cup$ Cnew，代表当前时刻新旧拓扑配置共存，写入本地日志，同时将该log entry推送至其他Follower节点</li>
+<li>Follower副本收到log entry后更新本地日志，并且此时就以该配置作为自己了解的全局拓扑结构，</li>
+<li>如果多数Follower确认了Cold $\cup$ Cnew这条日志的时候，Leader就Commit这条log entry；</li>
+<li>接下来Leader生成一条新的log entry，其内容是全新的配置Cnew，同样将该log entry写入本地日志，同时推送到Follower上；</li>
+<li>Follower收到新的配置日志Cnew后，将其写入日志，并且从此刻起，就以该新的配置作为系统拓扑，并且如果发现自己不在Cnew这个配置中会自动退出</li>
+<li>Leader收到多数Follower的确认消息以后，给客户端发起命令执行成功的消息</li>
+</ol>
+<p>为什么需要弄这样一个两阶段协议，而不能直接从Cold切换至Cnew？<br>这是因为，如果直接这么简单粗暴的来做的话，可能会产生多主。简单说明下：</p>
+<p>假设一个集群存在三个节点S1，S2和S3，S1为Leader，其余为follower，此时新增两个节点S4，S5。S1如果直接将新的拓扑结构复制给S2后还没来得及复制个S3就下线了，此时需要选举，S2和S3都变成candidate发起投票，此时S1上线，将票投给S3，S4和S5将票投给S2。由于S3保留的是旧的拓扑结构，因此S2和S3都认为自己当选Leader，产生了两个Leader。这是由于整个集群节点所看到的集群拓扑结构不同引起的。</p>
+<h2 id="ZAB协议"><a href="#ZAB协议" class="headerlink" title="ZAB协议"></a>ZAB协议</h2><p>Zookeeper原子广播协议（Zookeeper Atomic Broadcast），简称ZAB协议，是zookeeper的一致性协议，zookeeper是分布式协调系统，很多分布式系统通过zookeeper来实现HA，解决一致性问题。而zookeeper本身是通过ZAB协议来保持一致性。ZAB协议主要分三部分：原子阶段，快速选举阶段和恢复阶段。ZAB协议中的一个重要数据是zxid，其分为两部分前32位代表epoch，每一次选举会加1，后32位代表事务id，每产生一个事务加1</p>
+<h3 id="原子阶段"><a href="#原子阶段" class="headerlink" title="原子阶段"></a>原子阶段</h3><p>zookeeper广播是一个优化的二阶段提交的过程：</p>
+<ol>
+<li>所有的写请求都是提交到leader上，即使客户端连接follower提交写请求，follower也会将请求传递给leader。</li>
+<li>leader收到写请求，会将zxid自增1赋值给每一个事务（zxid维持日志执行的顺序性）</li>
+<li>leader和每一个follower都维持了一个先进先出队列，leader将zxid和事务作为一个提案（proposal）放入每个队列中。</li>
+<li>follower从队列中获得提案，将提案写入磁盘（放在history），返回给leader一个ACK</li>
+<li>leader接受到关于zxid的提案的一半数量以上的ACK，则在本地提交该提案，应用到状态机中，并给所有follower发送commit命令</li>
+<li>follower接受到commit命令会提交关于zxid的提案，同时应用到状态机中，如果follower之前（history中）还有没有执行的zxid小的提案，则按顺序提交</li>
+</ol>
+<p>leader和follower之间队列的存在是解决二阶段提交阻塞的一种有效的方式，将leader和follower解耦，leader只要将提案放入队列，follower只需从队列读取提案返回给leader结果即可</p>
+<h3 id="快速选举阶段"><a href="#快速选举阶段" class="headerlink" title="快速选举阶段"></a>快速选举阶段</h3><p>恢复阶段是针对leader挂掉的情况下的机制，ZAB协议在leader挂掉的情况通过保证以下两种情况来解决一致性问题：</p>
+<ul>
+<li>确保已经被commit的事务最终应用到状态机</li>
+<li>确保被leader提出还没有commit的事务全部丢弃</li>
+</ul>
+<p>为了保证上述两个要求，ZAB协议的选举会选举出具有最新（最大）的zxid的事务的节点作为准leader。</p>
+<p>当发现leader挂掉时，集群就开始选举。</p>
+<ol>
+<li>选举开始阶段，每个节点都参与选举，首先投自己一票，然后给其余节点分发自己的选票，同时维持一个线程用来接受记录其他节点发来的选票信息，对选票情况进行判断，选出leader。</li>
+<li>每个节点接受到其他节点的选票记录通过epoch（zxid的前32位），事务id（zxid后32位）和severid来进行比较，如果epoch相等则继续比较zxid，如果zxid相等则继续比较severid，如果其余节点的选票比自己的大，则更新自己的选票，否则坚持自己的选票，同时记录本次的选票到选票表中，将最新的选票发送给其他节点。</li>
+<li>最终当没有新的选票产生，则统计选票表中的选票记录，如果半数节点都投票给同一个节点，则选举该节点为leader</li>
+</ol>
+<h3 id="恢复阶段"><a href="#恢复阶段" class="headerlink" title="恢复阶段"></a>恢复阶段</h3><p>选举出准leader之后需要同步leader和follower之间的事务，准leader将epoch加1，更新lastZxid，准leader接受到follower的同步请求时，会返送lastZxid，follower接受到lastZxid，如果比自身小则需要同leader同步最新事务，否则说明自身的事务未提交，直接丢弃</p>
+<h2 id="ZAB和Raft的区别"><a href="#ZAB和Raft的区别" class="headerlink" title="ZAB和Raft的区别"></a>ZAB和Raft的区别</h2><ul>
+<li>在请求处理时，Raft通过AppendEntries RPC将follower少的日志批量添加，ZAB通过简化的二阶段提交，leader和follower之间维持一个队列实现异步</li>
+<li>Raft在选举leader只后就开始处理请求，因此raft需要增加了一个限制来防止上述的错误。而ZAB是选举准leader之后，同步完之后开始处理请求</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://book.51cto.com/art/201309/410608.htm" target="_blank" rel="noopener">两阶段提交协议</a></p>
+<p> <a href="https://github.com/maemual/raft-zh_cn/blob/master/raft-zh_cn.md" target="_blank" rel="noopener">Raft协议论文的中文扩展版</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/27207160" target="_blank" rel="noopener">Raft协议详解</a></p>
+<p><a href="https://www.jianshu.com/p/fb527a64deee" target="_blank" rel="noopener">Zab：Zookeeper 中的分布式一致性协议介绍</a></p>
+<p><a href="https://my.oschina.net/pingpangkuangmo/blog/782702" target="_blank" rel="noopener">Raft对比ZAB协议</a></p>
+<p><a href="https://juejin.im/post/5c989f6e5188252d785f2333" target="_blank" rel="noopener">ZooKeeper 一致性协议 ZAB 原理分析！</a></p>
+<p><a href="https://my.oschina.net/u/1378920/blog/914215" target="_blank" rel="noopener">Zookeeper一致性协议Zab详解</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/java线程池.html">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1682,194 +1950,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/ambaria安装HDP.html">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sean">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sean's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/ambaria安装HDP.html" class="post-title-link" itemprop="https://www.seanjiang.cn/index.html">ambaria安装HDP</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-07 09:13:50 / 修改时间：09:16:54" itemprop="dateCreated datePublished" datetime="2019-03-07T09:13:50+08:00">2019-03-07</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/ambaria安装HDP.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/ambaria安装HDP.html" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/ambaria安装HDP.html" class="leancloud_visitors" data-flag-title="ambaria安装HDP">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hadoop的生态非常的庞大，如果要对其一一搭建，并配置好相应的配置文件，需要耗费很大的精力和时间。利用Ambari + HDP能帮助我们快速搭建Hadoop平台，同时Ambari提供了监控集群的功能，能在其上面方便的添加Hadoop生态的组件以及相关的分布式框架，如spark,kafka等等。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/ambaria安装HDP.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-         
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1917,7 +1997,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1991,7 +2071,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -2639,9 +2723,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       
