@@ -108,13 +108,17 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sean&#39;s Blog">
-<meta property="og:url" content="https://www.seanjiang.cn/archives/index.html">
+  <meta name="description" content="锁的类型Mysql提供了两种标准的行级锁：共享锁和排他锁。 共享锁和排他锁可以理解成读锁和写锁，读写锁之间只有读锁和读锁之间不互斥，写锁和写锁，读锁和写锁之间都会互斥。 查看MySQL中的锁情况，可以通过库INFORMATION_SCHEMA中的INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS表来查看具体锁情况。包括当前事务的状态，事务的ID，事务的sql，线程i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL锁算法">
+<meta property="og:url" content="https://www.seanjiang.cn/MySQL锁算法.html">
 <meta property="og:site_name" content="Sean&#39;s Blog">
+<meta property="og:description" content="锁的类型Mysql提供了两种标准的行级锁：共享锁和排他锁。 共享锁和排他锁可以理解成读锁和写锁，读写锁之间只有读锁和读锁之间不互斥，写锁和写锁，读锁和写锁之间都会互斥。 查看MySQL中的锁情况，可以通过库INFORMATION_SCHEMA中的INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS表来查看具体锁情况。包括当前事务的状态，事务的ID，事务的sql，线程i">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-18T13:25:13.152Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sean&#39;s Blog">
+<meta name="twitter:title" content="MySQL锁算法">
+<meta name="twitter:description" content="锁的类型Mysql提供了两种标准的行级锁：共享锁和排他锁。 共享锁和排他锁可以理解成读锁和写锁，读写锁之间只有读锁和读锁之间不互斥，写锁和写锁，读锁和写锁之间都会互斥。 查看MySQL中的锁情况，可以通过库INFORMATION_SCHEMA中的INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS表来查看具体锁情况。包括当前事务的状态，事务的ID，事务的sql，线程i">
 
 
 
@@ -123,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="https://www.seanjiang.cn/archives/">
+  <link rel="canonical" href="https://www.seanjiang.cn/MySQL锁算法.html">
 
 
 
@@ -133,7 +137,7 @@
   };
 </script>
 
-  <title>归档 | Sean's Blog</title>
+  <title>MySQL锁算法 | Sean's Blog</title>
   
 
 
@@ -182,7 +186,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -287,7 +291,7 @@
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
 
     
     
@@ -358,423 +362,233 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.seanjiang.cn/MySQL锁算法.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sean">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">MySQL锁算法
+              
+            
+          </h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-18 21:18:09 / 修改时间：21:25:13" itemprop="dateCreated datePublished" datetime="2019-08-18T21:18:09+08:00">2019-08-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 24 篇日志。 继续努力。
-      </span>
-      
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2019">2019</h1>
-          </div>
-        
-        
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/MySQL锁算法.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/MySQL锁算法.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
+          
+          
+             <span id="/MySQL锁算法.html" class="leancloud_visitors" data-flag-title="MySQL锁算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/MySQL锁算法.html" itemprop="url">
-              
-                <span itemprop="name">MySQL锁算法</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-18T21:18:09+08:00" content="2019-08-18">
-          08-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+          
 
 
-      
+          
 
-        
-        
-        
+          
 
-        
-        
+        </div>
+      </header>
+    
 
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/分布式一致性协议介绍.html" itemprop="url">
-              
-                <span itemprop="name">分布式一致性协议介绍</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-07-29T17:25:05+08:00" content="2019-07-29">
-          07-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/java线程池.html" itemprop="url">
-              
-                <span itemprop="name">java线程池</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-04-10T21:05:02+08:00" content="2019-04-10">
-          04-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/ReentrantLock.html" itemprop="url">
-              
-                <span itemprop="name">ReentrantLock</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-04-10T20:09:25+08:00" content="2019-04-10">
-          04-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h3 id="锁的类型"><a href="#锁的类型" class="headerlink" title="锁的类型"></a>锁的类型</h3><p>Mysql提供了两种标准的行级锁：共享锁和排他锁。</p>
+<p>共享锁和排他锁可以理解成读锁和写锁，读写锁之间只有读锁和读锁之间不互斥，写锁和写锁，读锁和写锁之间都会互斥。</p>
+<p>查看MySQL中的锁情况，可以通过库INFORMATION_SCHEMA中的INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS表来查看具体锁情况。包括当前事务的状态，事务的ID，事务的sql，线程id，等待事务的锁id，事务开始时间，事务锁定的索引，事务锁定的行数量，数据锁定的页数量，事务锁定的主键值等</p>
+<a id="more"></a>
+<h3 id="一致性非锁定读（快照读）"><a href="#一致性非锁定读（快照读）" class="headerlink" title="一致性非锁定读（快照读）"></a>一致性非锁定读（快照读）</h3><p>在事务中简单的SELECT操作就是快照读，不包括SELECT…FOR UPDATE和SELECT…LOCK IN SHARE MODE方式，这两种会触触发当前读，下文会讲到</p>
+<p> 一致性非锁定读的实现是采用多版本并发控制MVCC (Multi Version Concurrency Control)来实现，其基本思想是对于不同的事务创建不同的快照，每个事务读取对应的快照，从而隔离事务之间对记录修改的影响。</p>
+<p>MVCC方法作用于Read committed和Repeatable read这两种隔离级别上，在不同隔离级别上快照建立的时间不同。对于Read committed，每次select会创建一个快照，而对于Repeatable read是当事务中的第一个select时才会创建快照。</p>
+<h4 id="MVCC的具体实现"><a href="#MVCC的具体实现" class="headerlink" title="MVCC的具体实现"></a>MVCC的具体实现</h4><p>innodb中聚簇索引包含了两个隐藏的值，trx_id和roll_pointer两个字段，trx_id记录了对记录进行修改的事务ID，每新建一个事务，该事务的trx_id会自增1。roll_pointer记录了修改之前的记录的指针，之前版本的记录会放进undo日志当中，roll_pointer指向的就是undo日志老版本记录的位置。</p>
+<p>Read committed和Repeatable read在MVCC上使用的不同就是创建快照的时间不同，这里的快照记录了当前活动的事务的id，通过以下判断当前记录的trx_id和快照中的活动事务ID列表来决定读取的记录</p>
+<ul>
+<li>要访问的记录trx_id比快照中的活动事务ID最小值都要小时，说明该记录在之前的事务已经提交了，可以访问</li>
+<li>要访问的记录trx_id在照中的活动事务ID最小值和最大值之间，则需要判断trx_id是否在活动事务列表中，如果在则说明事务还未提交，无法访问，需要通过roll_pointer寻找上一条记录。如果不在，则说明事务已经提交，可以访问</li>
+<li>要访问的记录trx_id比快照中的活动事务ID最大值都要大时，说明该记录是创建快照之后生成的，不能访问，需要通过roll_pointer寻找上一条记录。</li>
+</ul>
+<p>不断通过trx_id和活动事务列表判断直到寻找到可以访问的记录。</p>
+<h3 id="一致性锁定读（当前读）"><a href="#一致性锁定读（当前读）" class="headerlink" title="一致性锁定读（当前读）"></a>一致性锁定读（当前读）</h3><p>当前读,读取的是最新的记录, 同时会对记录增加锁，阻塞其他事务修改记录。SELECT…FOR UPDATE和SELECT…LOCK IN SHARE MODE就是当前锁的操作，前一个会获得排他锁，后一个是共享锁。</p>
+<p>SELECT…FOR UPDATE能够很好的解决丢失更新的问题，丢失更新的问题如下：</p>
+<p>1、事务A查询一行数据，保存在本地进行修改，还未update</p>
+<p>2、事务B查询相同的一行数据，保存在本地进行修改，还未update</p>
+<p>3、事务A update本地修改好的数据并提交</p>
+<p>3、事务B update本地修改好的数据并提交</p>
+<p>这种情况理论是没有问题的，但是在逻辑上事务B会覆盖事务A的提交，事务A发生了丢失更新</p>
+<p>事务A中执行SELECT…FOR UPDATE会获取排他锁，阻塞其余事务修改操作，这时事务Aupdate并提交才会释放锁，因此在事务A中是不会出现丢失更新的，其他事务在事务A不提交会阻塞在查询记录的sql上。</p>
+<p>一致性锁定读是基于next-key lock实现的，next-key lock是包括Record Lock和gap Lock的，Record Lock是行锁，锁定具体一行记录，gap Lock是间隙锁，锁定两行记录之间的间隙。什么是间隙和行记录呢？如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">表A，有字段a,b,c,primary key为a,b列上建立普通索引</span><br><span class="line">a			b			c</span><br><span class="line">1			2			3</span><br><span class="line">2			5			8</span><br><span class="line">3			6			9</span><br></pre></td></tr></table></figure>
+<p>则表A有三条记录，Record Lock是锁在这些记录上的，字段b的间隙有(-$\infty$, 2),(2 5),(5, 6),(6,+$\infty$)，间隙就是排序后字段各个值的中间，间隙锁主要是用于锁住间隙，这样插入间隙之间字段值就需要获得间隙锁才能执行。间隙锁只有在Read Repeatable、Serializable隔离级别，能够使用间隙锁很好的防止幻读。</p>
+<p>一致性锁定读使用next-key lock来实现。</p>
+<ul>
+<li><p>例如在上述表A，在事务A中SELECT * FROM A WHER a = 2 FOR UPDATE，会使用next-key lock来锁住，由于字段a是主键，在唯一索引上，并且where 条件=或者in，next-key lock会降级成Record Lock，因为可以确定唯一的记录。</p>
+</li>
+<li><p>如果是在事务A中执行SELECT <em> FROM A WHER b = 2 FOR UPDATE或SELECT </em> FROM A WHER b &gt; 2 and b &lt; 5 FOR UPDATE，当对索引（不包括唯一索引）上进行wherr时，会对命中的记录加Record Lock，包括的范围（间隙(2，5)）加上gap Lock，同时对下一个间隙（(5，6)）也要加上gap Lock。此时其他事务对b=2的记录更新或者inser into字段b的值范围在2到5都会阻塞，因为b=2的记录和间隙(2 5),(5, 6)都被锁住了</p>
+</li>
+<li><p>如果是在事务A中执行SELECT * FROM A WHER c = 2 FOR UPDATE，则会多全表进行gap Lock，因为字段c上没有索引，进行当前读会在全表上使用间隙锁，这个尽量避免</p>
+</li>
+</ul>
+<h3 id="幻读解决"><a href="#幻读解决" class="headerlink" title="幻读解决"></a>幻读解决</h3><p>通过MVCC和next-key lock看起来已经很好解决了幻读问题，其实mysql的Repeatable read可以说是解决了幻读问题，但是也可以说做的还不够，官方给出的回答是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">只要在一个事务中，第二次select多出了row就算幻读。</span><br><span class="line">a事务先select，b事务insert确实会加一个gap锁，但是如果b事务commit，这个gap锁就会释放（释放后a事务可以随意dml操作），a事务再select出来的结果在MVCC下还和第一次select一样，接着a事务不加条件地update，这个update会作用在所有行上（包括b事务新加的），a事务再次select就会出现b事务中的新行，并且这个新行已经被update修改了，实测在RR级别下确实如此。</span><br><span class="line">如果这样理解的话，Mysql的RR级别确实防不住幻读</span><br></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://baijiahao.baidu.com/s?id=1629409989970483292&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">https://baijiahao.baidu.com/s?id=1629409989970483292&amp;wfr=spider&amp;for=pc</a></p>
+<p>《MySQL技术内幕-InnoDB存储结构》</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/java同步器-AQS.html" itemprop="url">
-              
-                <span itemprop="name">java同步器-AQS</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-15T22:09:29+08:00" content="2019-03-15">
-          03-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/红黑树-转载整理.html" itemprop="url">
-              
-                <span itemprop="name">红黑树-转载整理</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-15T22:08:09+08:00" content="2019-03-15">
-          03-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/mapreduce过程-shuffle和sort.html" itemprop="url">
-              
-                <span itemprop="name">mapreduce过程-shuffle和sort</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-07T21:47:42+08:00" content="2019-03-07">
-          03-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/关于动态规划的想法.html" itemprop="url">
-              
-                <span itemprop="name">关于动态规划的想法</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-07T09:38:01+08:00" content="2019-03-07">
-          03-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/读HashMap源码.html" itemprop="url">
-              
-                <span itemprop="name">读HashMap源码</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-07T09:35:42+08:00" content="2019-03-07">
-          03-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/ambaria安装HDP.html" itemprop="url">
-              
-                <span itemprop="name">ambaria安装HDP</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-03-07T09:13:50+08:00" content="2019-03-07">
-          03-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/分布式一致性协议介绍.html" rel="next" title="分布式一致性协议介绍">
+                <i class="fa fa-chevron-left"></i> 分布式一致性协议介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -795,8 +609,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -921,6 +744,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#锁的类型"><span class="nav-text">锁的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一致性非锁定读（快照读）"><span class="nav-text">一致性非锁定读（快照读）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MVCC的具体实现"><span class="nav-text">MVCC的具体实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一致性锁定读（当前读）"><span class="nav-text">一致性锁定读（当前读）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#幻读解决"><span class="nav-text">幻读解决</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1058,6 +897,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
 
   
 
@@ -1437,43 +1280,42 @@
   
   <script>
     
-    function showTime(Counter) {
-      var entries = [];
+    function addCount(Counter) {
       var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
 
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      Counter('get', '/classes/Counter', { where: JSON.stringify({ url: { "$in": entries } }) })
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
         .done(function ({ results }) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.url;
-            var time = item.time;
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', `/classes/Counter/${counter.objectId}`, JSON.stringify({ time: { "__op":"Increment", "amount":1 } }))
+            
+            .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            })
+            
+            .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+            })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1}))
+                .done(function () {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function () {
+                  console.log('Failed to create');
+                });
+            
           }
         })
-        .fail(function ({ responseJSON }) {
-          console.log("LeanCloud Counter Error: " + responseJSON.code + " " + responseJSON.error);
-        });
+      .fail(function ({ responseJSON }) {
+        console.log('LeanCloud Counter Error:' + responseJSON.code + " " + responseJSON.error);
+      });
     }
     
 
@@ -1493,9 +1335,7 @@
             });
           };
           
-          if ($('.post-title-link').length >= 1) {
-            showTime(Counter);
-          }
+          addCount(Counter);
           
         })
     });

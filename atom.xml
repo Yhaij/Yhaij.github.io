@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.seanjiang.cn/"/>
-  <updated>2019-07-29T09:31:14.428Z</updated>
+  <updated>2019-08-18T13:25:13.152Z</updated>
   <id>https://www.seanjiang.cn/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL锁算法</title>
+    <link href="https://www.seanjiang.cn/MySQL%E9%94%81%E7%AE%97%E6%B3%95.html"/>
+    <id>https://www.seanjiang.cn/MySQL锁算法.html</id>
+    <published>2019-08-18T13:18:09.000Z</published>
+    <updated>2019-08-18T13:25:13.152Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;锁的类型&quot;&gt;&lt;a href=&quot;#锁的类型&quot; class=&quot;headerlink&quot; title=&quot;锁的类型&quot;&gt;&lt;/a&gt;锁的类型&lt;/h3&gt;&lt;p&gt;Mysql提供了两种标准的行级锁：共享锁和排他锁。&lt;/p&gt;
+&lt;p&gt;共享锁和排他锁可以理解成读锁和写锁，读写锁之间只有读锁和读锁之间不互斥，写锁和写锁，读锁和写锁之间都会互斥。&lt;/p&gt;
+&lt;p&gt;查看MySQL中的锁情况，可以通过库INFORMATION_SCHEMA中的INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS表来查看具体锁情况。包括当前事务的状态，事务的ID，事务的sql，线程id，等待事务的锁id，事务开始时间，事务锁定的索引，事务锁定的行数量，数据锁定的页数量，事务锁定的主键值等&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>分布式一致性协议介绍</title>
@@ -248,7 +266,7 @@
     <link href="https://www.seanjiang.cn/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8-Bloom-Filter.html"/>
     <id>https://www.seanjiang.cn/布隆过滤器-Bloom-Filter.html</id>
     <published>2018-12-18T15:06:16.000Z</published>
-    <updated>2018-12-18T15:10:42.000Z</updated>
+    <updated>2019-08-13T00:31:53.782Z</updated>
     
     <summary type="html">
     
@@ -395,7 +413,7 @@
     <link href="https://www.seanjiang.cn/mapreduce-%E6%8E%92%E5%BA%8F.html"/>
     <id>https://www.seanjiang.cn/mapreduce-排序.html</id>
     <published>2018-11-20T14:23:16.000Z</published>
-    <updated>2018-11-20T14:27:24.000Z</updated>
+    <updated>2019-08-13T01:20:28.137Z</updated>
     
     <summary type="html">
     
@@ -410,26 +428,6 @@
       <category term="MapReduce" scheme="https://www.seanjiang.cn/tags/MapReduce/"/>
     
       <category term="排序" scheme="https://www.seanjiang.cn/tags/%E6%8E%92%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HDFS扩容</title>
-    <link href="https://www.seanjiang.cn/hdfd%E6%89%A9%E5%AE%B9.html"/>
-    <id>https://www.seanjiang.cn/hdfd扩容.html</id>
-    <published>2018-11-20T14:21:21.000Z</published>
-    <updated>2018-11-23T14:33:20.000Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;hdfs的存储容量不足，需要放入新磁盘扩容&lt;br&gt;扩容有两种方式，一种是linux层面的，一种是hdfs层面的&lt;br&gt;hdfs的datanode存储的目录可以查看hdfs-site.xml的dfs.datanode.data.dir的值&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Hadoop" scheme="https://www.seanjiang.cn/categories/Hadoop/"/>
-    
-    
-      <category term="HDFS" scheme="https://www.seanjiang.cn/tags/HDFS/"/>
     
   </entry>
   
