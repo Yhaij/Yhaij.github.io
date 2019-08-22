@@ -1791,7 +1791,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-25 11:13:31" itemprop="dateModified" datetime="2019-05-25T11:13:31+08:00">2019-05-25</time>
+                <time title="修改时间：2019-08-22 16:31:50" itemprop="dateModified" datetime="2019-08-22T16:31:50+08:00">2019-08-22</time>
               
             
           </span>
@@ -1866,7 +1866,7 @@
       
         
           <h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>在Hbase中，数据同样是存储在表中，有行和列。但是hbase和关系型数据库（RDBMS）有很大的区别，hbase更像是多维度的map。</p>
-<p>hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column qualifier），一般将列限定符成为列，一行有固定的列簇（由表结构决定），一个列簇包含一系列的列，列没有固定的结构，每一行的列簇下的列可以不相同，列由添加数据决定，可以将hbase的表想象成一个Map&lt;row, Map&lt;column family,Map<column qualifier,="" value="">&gt;&gt;,由行、列簇寻找一个key不固定的map。而且相同单元格会存储着不同的版本值，每一次存储新值会添加时间戳Timestamp，并不会覆盖掉上次值，一个hbase表默认能存储一个版本值，若第四次设置新增，则会把第一次的值覆盖掉。因此一个单元格的定位需要row,family,qualifier和timestamp来确定。</column></p>
+<p>hbase的同样有着表（table）, 行（row）,列（Column），根据表、行、列可以定位到一个单元格（cell）上,这样看来hbase和关系型数据库形式一样，其实不是的，hbase的列包括列簇（column family）和列限定符（column qualifier），一般将列限定符成为列，一行有固定的列簇（由表结构决定），一个列簇包含一系列的列，列没有固定的结构，每一行的列簇下的列可以不相同，列由添加数据决定，可以将hbase的表想象成一个Map&lt;row, Map&lt;column family,Map<column qualifier,="" value="">&gt;&gt;,由行、列簇寻找一个key不固定的map。而且相同单元格会存储着不同的版本值，每一次存储新值会添加时间戳Timestamp，并不会覆盖掉上次值，一个hbase表默认能存储三个版本值，若第四次设置新增，则会把第一次的值覆盖掉。因此一个单元格的定位需要row,family,qualifier和timestamp来确定。</column></p>
           <!--noindex-->
           
             <div class="post-button text-center">

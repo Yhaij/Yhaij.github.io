@@ -118,7 +118,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log.png">
 <meta property="og:image" content="https://image-1252181910.cos.ap-chengdu.myqcloud.com/image/raft_log2.png">
-<meta property="og:updated_time" content="2019-07-29T09:31:14.428Z">
+<meta property="og:updated_time" content="2019-08-22T12:19:12.954Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式一致性协议介绍">
 <meta name="twitter:description" content="一致性分布式存储系统通常通过维护多个副本来进行容错，提高系统的可用性。但是分布式存储存在一个问题，如何保证相同时刻存储的数据是一样的，这就是一致性。它是构建具有容错性的分布式系统的基础，一致性保证每个结点存储的数据是一致的，这样即使部分结点宕机也能取得正确的副本数据。目前的一致性一致性协议通常基于replicated state machines，各个节点从一个相同初始化state出发，经过同样的">
@@ -428,12 +428,24 @@
                 
               
 
-              <time title="创建时间：2019-07-29 17:25:05 / 修改时间：17:31:14" itemprop="dateCreated datePublished" datetime="2019-07-29T17:25:05+08:00">2019-07-29</time>
+              <time title="创建时间：2019-07-29 17:25:05" itemprop="dateCreated datePublished" datetime="2019-07-29T17:25:05+08:00">2019-07-29</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-22 20:19:12" itemprop="dateModified" datetime="2019-08-22T20:19:12+08:00">2019-08-22</time>
               
             
           </span>
@@ -557,7 +569,8 @@
 <li>Follower收到新的配置日志Cnew后，将其写入日志，并且从此刻起，就以该新的配置作为系统拓扑，并且如果发现自己不在Cnew这个配置中会自动退出</li>
 <li>Leader收到多数Follower的确认消息以后，给客户端发起命令执行成功的消息</li>
 </ol>
-<p>为什么需要弄这样一个两阶段协议，而不能直接从Cold切换至Cnew？<br>这是因为，如果直接这么简单粗暴的来做的话，可能会产生多主。简单说明下：</p>
+<p>为什么需要弄这样一个两阶段协议，而不能直接从Cold切换至Cnew？</p>
+<p>这是因为，如果直接这么简单粗暴的来做的话，可能会产生多主。简单说明下：</p>
 <p>假设一个集群存在三个节点S1，S2和S3，S1为Leader，其余为follower，此时新增两个节点S4，S5。S1如果直接将新的拓扑结构复制给S2后还没来得及复制个S3就下线了，此时需要选举，S2和S3都变成candidate发起投票，此时S1上线，将票投给S3，S4和S5将票投给S2。由于S3保留的是旧的拓扑结构，因此S2和S3都认为自己当选Leader，产生了两个Leader。这是由于整个集群节点所看到的集群拓扑结构不同引起的。</p>
 <h2 id="ZAB协议"><a href="#ZAB协议" class="headerlink" title="ZAB协议"></a>ZAB协议</h2><p>Zookeeper原子广播协议（Zookeeper Atomic Broadcast），简称ZAB协议，是zookeeper的一致性协议，zookeeper是分布式协调系统，很多分布式系统通过zookeeper来实现HA，解决一致性问题。而zookeeper本身是通过ZAB协议来保持一致性。ZAB协议主要分三部分：原子阶段，快速选举阶段和恢复阶段。ZAB协议中的一个重要数据是zxid，其分为两部分前32位代表epoch，每一次选举会加1，后32位代表事务id，每产生一个事务加1</p>
 <h3 id="原子阶段"><a href="#原子阶段" class="headerlink" title="原子阶段"></a>原子阶段</h3><p>zookeeper广播是一个优化的二阶段提交的过程：</p>
@@ -1453,6 +1466,30 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
   
 
 
